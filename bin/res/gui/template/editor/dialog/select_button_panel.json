@@ -1,0 +1,33 @@
+{
+	"type_name":"CCLayer",
+	"pos":{
+		"x":"50%",
+		"y":"50%"
+	},
+	"zorder":1000,
+	"touchEnabled":true,
+	"child_list":[
+		{
+			"type_name":"CCLayerColor",
+			"pos":{
+				"x":"50%",
+				"y":"50%"
+			},
+			"color":8812928,
+			"opacity":50
+		},
+		{
+			"type_name":"CCVerTemplateList",
+			"name":"list",
+			"pos":{
+				"x":"50%",
+				"y":"50%"
+			},
+			"size":{
+				"height":"100%",
+				"width":"100%-1280"
+			},
+			"template":"default/tree_view_item"
+		}
+	]
+}

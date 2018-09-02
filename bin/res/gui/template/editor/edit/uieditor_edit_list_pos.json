@@ -1,0 +1,26 @@
+{
+	"type_name":"CCNode",
+	"pos":{
+		"x":374,
+		"y":26
+	},
+	"size":{
+		"height":100,
+		"width":250
+	},
+	"anchor":{
+		"x":0,
+		"y":0
+	},
+	"child_list":[
+		{
+			"type_name":"CCVerTemplateList",
+			"name":"posList",
+			"anchor":{
+				"x":0,
+				"y":0
+			},
+			"template":"editor/edit/uieditor_edit_edit"
+		}
+	]
+}

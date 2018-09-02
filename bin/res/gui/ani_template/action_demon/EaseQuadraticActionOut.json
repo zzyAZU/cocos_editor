@@ -1,0 +1,31 @@
+[
+	{
+		"type_name":"Sequence",
+		"child_list":[
+			{
+				"type_name":"MoveTo",
+				"p":{
+					"x":"75%",
+					"y":"50%"
+				},
+				"t":3,
+				"child_list":[
+					{
+						"type_name":"EaseQuadraticActionOut"
+					}
+				]
+			},
+			{
+				"type_name":"RepeatForever"
+			},
+			{
+				"type_name":"MoveTo",
+				"p":{
+					"x":"25%",
+					"y":"50%"
+				},
+				"t":0.01
+			}
+		]
+	}
+]

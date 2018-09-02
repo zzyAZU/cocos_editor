@@ -1,0 +1,47 @@
+{
+	"type_name":"CCCheckButton",
+	"pos":{
+		"x":"23.5%",
+		"y":"72.5%"
+	},
+	"size":{
+		"height":30,
+		"width":205
+	},
+	"9sprite":true,
+	"capInsets":{
+		"height":19,
+		"width":78,
+		"x":9,
+		"y":8
+	},
+	"frame1":"editor_res/tabButton_nor.png",
+	"frame2":"editor_res/tabButton_sel.png",
+	"frame3":"",
+	"fontSize":15,
+	"textColor2":6873690,
+	"textOffset":{
+		"x":"50%-8",
+		"y":"50%"
+	},
+	"swallow":false,
+	"noEventAfterMove":true,
+	"child_list":[
+		{
+			"type_name":"CCButton",
+			"name":"btnClose",
+			"pos":{
+				"x":"i10",
+				"y":"i10"
+			},
+			"size":{
+				"height":14,
+				"width":14
+			},
+			"9sprite":"0 0 0 0 0",
+			"plist":"",
+			"frame1":"editor_res/close_nor.png",
+			"frame2":"editor_res/close_sel.png"
+		}
+	]
+}

@@ -1,0 +1,27 @@
+{
+	"type_name":"CCNode",
+	"pos":{
+		"x":225,
+		"y":495
+	},
+	"size":{
+		"height":48,
+		"width":250
+	},
+	"child_list":[
+		{
+			"type_name":"CCButton",
+			"name":"btn",
+			"pos":{
+				"x":"50%",
+				"y":"50%"
+			},
+			"size":{
+				"height":38,
+				"width":120
+			},
+			"text":"编辑",
+			"fontSize":20
+		}
+	]
+}
