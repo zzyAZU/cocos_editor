@@ -25,4 +25,12 @@ qq技术交流群:474161305
 
 
 # 简单使用
+## UI编辑器
+<img src="https://raw.githubusercontent.com/CarlZhongZ/cocos_editor/master/docs/UI_editor.png" alt="alt text" title="Title" />
 
+## 动画编辑
+<img src="https://raw.githubusercontent.com/CarlZhongZ/cocos_editor/master/docs/action_ani_editor.png" alt="alt text" title="Title" />
+
+> 使用教程可以参照 docs/编辑器.xmind 里面的操作说明, 至于其他细节的教程, 以后有时间会一一补齐
+
+> 开源这套编辑器的目的是为了不断完善这个编辑器以及通过技术交流学习提升, 共勉
