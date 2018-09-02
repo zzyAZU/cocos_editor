@@ -1,5 +1,0 @@
-方法一：将engine目录下的 exe 和 dll 全都复制到bin目录下双击exe即可运行
-
-方法二：在engine 目录下运行命令行 Engine317.exe -console -workdir C:\Users\Administrator\Desktop\work\my_github\cc_editor\bin/   (bin为工作目录)
-
-第一次运行会弹出设置面板让你设置资源目录, 将目录设置成 bin 目录下的 res目录即可(或者设置成开发项目的 res目录, 可以理解编辑器的res 为编辑器项目),设置好后点确定即可。
