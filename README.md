@@ -1,3 +1,5 @@
+github: https://github.com/CarlZhongZ/cocos_editor
+
 qq技术交流群:474161305
 
 # 简单介绍
