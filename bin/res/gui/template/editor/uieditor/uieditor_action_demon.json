@@ -4,6 +4,10 @@
 		"x":"50%",
 		"y":"50%"
 	},
+	"size":{
+		"height":720,
+		"width":1280
+	},
 	"zorder":300,
 	"child_list":[
 		{
@@ -18,7 +22,7 @@
 				"width":"50%"
 			},
 			"spriteFrame":{
-				"path":"gui/default/bg_common_C.png"
+				"path":"gui/default/default_img.png"
 			},
 			"capInsets":{
 				"height":19,
@@ -28,110 +32,21 @@
 			}
 		},
 		{
-			"type_name":"CCSprite",
-			"name":"sp",
+			"type_name":"CCNode",
+			"name":"node",
 			"pos":{
-				"x":"25%",
+				"x":"50%",
 				"y":"50%"
 			},
-			"ani_data":{
-				"EaseBackIn":[
-					"action_demon/EaseBackIn"
-				],
-				"EaseBackInOut":[
-					"action_demon/EaseBackInOut"
-				],
-				"EaseBackOut":[
-					"action_demon/EaseBackOut"
-				],
-				"EaseBounceIn":[
-					"action_demon/EaseBounceIn"
-				],
-				"EaseBounceInOut":[
-					"action_demon/EaseBounceInOut"
-				],
-				"EaseBounceOut":[
-					"action_demon/EaseBounceOut"
-				],
-				"EaseCircleActionIn":[
-					"action_demon/EaseCircleActionIn"
-				],
-				"EaseCircleActionInOut":[
-					"action_demon/EaseCircleActionInOut"
-				],
-				"EaseCircleActionOut":[
-					"action_demon/EaseCircleActionOut"
-				],
-				"EaseCubicActionIn":[
-					"action_demon/EaseCubicActionIn"
-				],
-				"EaseCubicActionInOut":[
-					"action_demon/EaseCubicActionInOut"
-				],
-				"EaseCubicActionOut":[
-					"action_demon/EaseCubicActionOut"
-				],
-				"EaseElasticIn":[
-					"action_demon/EaseElasticIn"
-				],
-				"EaseElasticInOut":[
-					"action_demon/EaseElasticInOut"
-				],
-				"EaseElasticOut":[
-					"action_demon/EaseElasticOut"
-				],
-				"EaseExponentialIn":[
-					"action_demon/EaseExponentialIn"
-				],
-				"EaseExponentialInOut":[
-					"action_demon/EaseExponentialInOut"
-				],
-				"EaseIn":[
-					"action_demon/EaseIn"
-				],
-				"EaseInOut":[
-					"action_demon/EaseInOut"
-				],
-				"EaseOut":[
-					"action_demon/EaseOut"
-				],
-				"EaseQuadraticActionIn":[
-					"action_demon/EaseQuadraticActionIn"
-				],
-				"EaseQuadraticActionInOut":[
-					"action_demon/EaseQuadraticActionInOut"
-				],
-				"EaseQuadraticActionOut":[
-					"action_demon/EaseQuadraticActionOut"
-				],
-				"EaseQuarticActionIn":[
-					"action_demon/EaseQuarticActionIn"
-				],
-				"EaseQuarticActionInOut":[
-					"action_demon/EaseQuarticActionInOut"
-				],
-				"EaseQuarticActionOut":[
-					"action_demon/EaseQuarticActionOut"
-				],
-				"EaseQuinticActionIn":[
-					"action_demon/EaseQuinticActionIn"
-				],
-				"EaseQuinticActionInOut":[
-					"action_demon/EaseQuinticActionInOut"
-				],
-				"EaseQuinticActionOut":[
-					"action_demon/EaseQuinticActionOut"
-				],
-				"EaseSineIn":[
-					"action_demon/EaseSineIn"
-				],
-				"EaseSineInOut":[
-					"action_demon/EaseSineInOut"
-				],
-				"EaseSineOut":[
-					"action_demon/EaseSineOut"
-				]
-			}
+			"size":{
+				"height":"100$",
+				"width":"100$"
+			},
+			"scale":{
+				"x":"1w",
+				"y":"1w"
+			},
+			"zorder":300
 		}
 	]
 }

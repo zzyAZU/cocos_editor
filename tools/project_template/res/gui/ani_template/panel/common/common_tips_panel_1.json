@@ -1,0 +1,34 @@
+[
+	{
+		"type_name":"Sequence",
+		"child_list":[
+			{
+				"type_name":"MoveTo",
+				"p":{
+					"x":"50%",
+					"y":"50%100"
+				},
+				"t":0.5
+			},
+			{
+				"type_name":"EaseQuinticActionInOut",
+				"name":""
+			}
+		]
+	},
+	{
+		"type_name":"Sequence",
+		"child_list":[
+			{
+				"type_name":"DelayTime",
+				"t":1
+			},
+			{
+				"type_name":"CallFunc",
+				"n":"on_open_ani_end",
+				"name":"",
+				"p":"s"
+			}
+		]
+	}
+]

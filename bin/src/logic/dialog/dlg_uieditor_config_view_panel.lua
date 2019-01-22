@@ -9,6 +9,13 @@ local UIControlItem = import('uieditor.uieditor_control_item').UIControlItem
 Panel = g_panel_mgr.new_panel_class('editor/uieditor/uieditor_config_view')
 
 function Panel:_initMainPanel()
+    -- view size
+    local resolutionSize = g_native_conf['editor_design_resolution_size']
+    local w, h = resolutionSize.width, resolutionSize.height
+    self.layerDevice:SetContentSize(w, h)
+    self.layerDevice.rectBorder:SetContentSize(w, h)
+    self.nodeSelFrames:SetContentSize(w, h)
+
     -- drag & drop list object
     self.listObjects:EnableDragAndDrop(function(btn)
         if btn.uicontrol_item:IsSelected() then
@@ -40,16 +47,6 @@ function Panel:_initMainPanel()
         self:ShowTips('搜到%d个结果', #selItems)
         self:SelectControlItems(selItems)
         self:_editRefreshCurselData()
-    end
-
-    -- 选择分辨率
-    self.comboResolution:SetPopupFrameWidth(300)
-    for _, setting in ipairs(constant_uieditor.resolution_setting) do
-        local w = math.max(setting.w, setting.h)
-        local h = math.min(setting.w, setting.h)
-        self.comboResolution:AddMenuItem(string.format('%d X %d [%s]', w, h, setting.name), function()
-            self:OPSetViewSize(w, h)
-        end)
     end
 
     --单选多选处理, 选中， 移动
@@ -151,12 +148,27 @@ function Panel:_initMainPanel()
         self:_editRefreshCurselData()
     end
 
-    self.checkShowAni.OnChecked = function(bcheck)
-        self.layerActionAni:setVisible(bcheck)
+    self.layerTouch.OnDropFile = function(filePaths, position)
+        self:_on_drop_file(filePaths, position)
     end
 
-    -- run ani
-    self.comboAni.OnBeforPopup = function()
+    -- 节点折叠
+    self:set_panel_swallow_key_event(false)
+    self.listObjects:EnableAutoKeyWrapByLevel(self)
+
+    -- ani edit
+    local function _selectAni(aniName)
+        self._curAniName = aniName
+        self:RefreshSelItemAniPropertyConf(true)
+
+        self.root_item:ForEachItem(function(v)
+            v:_updateListViewItem()
+        end)
+    end
+
+    local function _updateAni()
+        self._curAniName = nil
+        local defAniName = nil
         self.comboAni:SetItems({})
         if self.root_item then
             local aniNames = {}
@@ -164,24 +176,35 @@ function Panel:_initMainPanel()
                 for aniName, v in pairs(v:GetAniData()) do
                     if not table.is_empty(v) then
                         aniNames[aniName] = true
+                        if defAniName == nil then
+                            defAniName = aniName
+                        end
                     end
                 end
             end)
 
             for aniName, _ in pairs(aniNames) do
                 self.comboAni:AddMenuItem(aniName, function()
-                    self._curAniName = aniName
-                    self.comboAni:SetString(aniName)
-                    self.editAddAni:SetString(aniName)
-
-                    self:RefreshSelItemAniPropertyConf(true)
-
-                    self.root_item:ForEachItem(function(v)
-                        v:_updateListViewItem()
-                    end)
+                    _selectAni(aniName)
                 end)
             end
+
+            _selectAni(defAniName)
         end
+    end
+    self.layerActionAni:setVisible(self.checkShowAni:GetCheck())
+    self.checkShowAni.OnChecked = function(bcheck)
+        self.layerActionAni:setVisible(bcheck)
+
+        if bcheck then
+            _updateAni()
+        else
+            if self.layerShowAni:isVisible() then
+                self.btnPlayAni.OnClick()
+            end
+        end
+
+        self:RefreshSelItemAniPropertyConf()
     end
 
     self.btnPlayAni.OnClick = function()
@@ -201,36 +224,156 @@ function Panel:_initMainPanel()
                 local baseNode = g_uisystem.create_item(self.root_item:DumpItemCfg(), self.layerShowAni)
                 baseNode:PlayAnimation(self._curAniName)
             else
-                self:ShowTips('动画无效')
+                message('动画无效')
                 return
             end
         else
+            g_audio_mgr.stopMusic(true)
+            g_audio_mgr.stopAllSounds()
             self.btnPlayAni:SetString('播放')
             self.layerShowAni:setVisible(false)
             self.layerDevice:setVisible(true)
             self.nodeSelFrames:setVisible(true)
         end
     end
+
+    self.btnDelAni.OnClick = function()
+        if self._curAniName == nil then
+            message('请选择指定的动画再执行删除')
+            return
+        end
+
+        local delCount = 0
+        self.root_item:ForEachItem(function(v)
+            local aniData = v:GetAniData()
+            if aniData and aniData[self._curAniName] ~= nil then
+                aniData[self._curAniName] = nil
+                delCount = delCount + 1
+
+                v:_updateListViewItem()
+            end
+        end)
+
+        self._curAniName = nil
+
+        self:EditPush()
+        message('成功删除{1}个节点动画', delCount)
+        self:RefreshSelItemAniPropertyConf()
+    end
 end
 
-function Panel:OPDelCurAni()
-    if self._curAniName == nil then
-        message('请选择指定的动画再执行删除')
+-- 拖拽件
+function Panel:_on_drop_file(filePaths, position)
+    local project_res_path = g_logic_editor:get_project_res_path()
+    local function _addDropFile(filePath)
+        local releative_path = string.match(filePath, string.format('^%s(.+)$', project_res_path))
+        if releative_path == nil then
+            message('请选择当前项目res目录资源')
+            return
+        end
+
+        local suffix_str = string.match(releative_path, '^.+%.(.+)$')
+        if not suffix_str then
+            return
+        end
+
+        local file_suffix_to_node_conf = constant_uieditor.file_suffix_to_node[suffix_str]
+        if not file_suffix_to_node_conf then
+            -- message('没有找到文件类型配置，请选择有效的文件')
+            return
+        end
+
+        local check_sub_type_policy = file_suffix_to_node_conf.check_sub_type_policy
+        if check_sub_type_policy then
+            local is_valid, sub_type = check_sub_type_policy(releative_path)
+            if is_valid then
+                if sub_type ~= suffix_str then
+                    file_suffix_to_node_conf = file_suffix_to_node_conf[sub_type]
+                end
+            else
+                message('请选择有效的文件格式')
+                return
+            end
+        end
+
+        if file_suffix_to_node_conf then
+            return self:drag_generate_ui_node(releative_path, file_suffix_to_node_conf)
+        end
+    end
+
+    local listConf = {}
+    for _, filePath in ipairs(filePaths) do
+        local cfg = _addDropFile(filePath)
+        if cfg then
+            table.insert(listConf, cfg)
+        end
+    end
+
+    if table.is_empty(listConf) then
         return
     end
 
-    local delCount = 0
-    self.root_item:ForEachItem(function(v)
-        local aniData = v:GetAniData()
-        if aniData and aniData[self._curAniName] ~= nil then
-            aniData[self._curAniName] = nil
-            delCount = delCount + 1
+    local parentItem = self:GetSelectedControlItem() or self.root_item
+    local startIndex = nil
+    local addItem = {}
+    if parentItem then
+        if g_ui_event_mgr.is_ctrl_down() or g_ui_event_mgr.is_alt_down() then
+            local p = parentItem:GetParentItem()
+            if p then
+                parentItem = p
+                if g_ui_event_mgr.is_ctrl_down() then
+                    startIndex = parentItem:GetParentItemIndex() + 1
+                else
+                    startIndex = parentItem:GetParentItemIndex()
+                end
+            end
         end
-    end)
+    else
+        local conf = table.remove(listConf, 1)
+        conf['pos'] = position
+        parentItem = self:_addConf(conf)
+        table.insert(addItem, parentItem)
+    end
 
+    local localPosition = parentItem:GetCtrl():convertToNodeSpace(position)
+    localPosition.x = math.round_number(localPosition.x)
+    localPosition.y = math.round_number(localPosition.y)
+
+    for i, conf in ipairs(listConf) do
+        conf['pos'] = localPosition
+        table.insert(addItem, self:_addConf(conf, parentItem, startIndex and startIndex + i -1))
+    end
     self:EditPush()
-    message('成功删除{1}个节点动画', delCount)
-    self:RefreshSelItemAniPropertyConf()
+
+    self:SelectControlItems(addItem)
+end
+
+--生成节点
+function Panel:drag_generate_ui_node(releative_path, conf)
+    local defConf = conf.defConf or {}
+    defConf.type_name = conf.type_name
+
+    for _, param in ipairs(conf.params or {}) do
+        local cur_conf = defConf
+        local file_key_path = param.file_key_path
+        local keys = string.split(file_key_path, ".")
+    
+        for index, key in ipairs(keys or {}) do
+            if index ~= #keys then
+                local sub_conf = defConf[key] or {}
+                defConf[key] = sub_conf
+                cur_conf = sub_conf
+            else
+                local change_param = param.change_param
+                if change_param then
+                    releative_path = change_param(releative_path)
+                end
+                cur_conf[key] = releative_path
+            end
+        end
+    end
+
+    return defConf
 end
 
 -- override
@@ -248,15 +391,12 @@ function Panel:init_panel(templateName)
     self._editOPCount = 0
 
     -- panel resolution
-    self._viewSize = nil
 
     -- panel test show animation
     self._curAniName = nil
 
     -- init
     self:_initMainPanel()
-    local editor_view_size = g_native_conf['editor_design_resolution_size']
-    self:OPSetViewSize(editor_view_size.width, editor_view_size.height)
 
     -- 加载配置
     if templateName then
@@ -292,9 +432,12 @@ end
 
 -- 保存 panel 对应的配置
 function Panel:SaveConfig(templateName)
-    if templateName ~= nil then
-        self._templateName = templateName
+    local tmpName = string.match(templateName, '(.+)%.json')
+    if tmpName then
+        templateName = tmpName
     end
+
+    self._templateName = templateName
 
     g_multi_doc_manager.save_template_conf(self)
 
@@ -376,21 +519,12 @@ end
 -- 控制当前文档的可见性
 function Panel:ShowConfigView(bShow)
     self:get_layer():setVisible(bShow)
-    if bShow then
-        -- 判断当前view size 是否有改变如果有改变则重新刷新
-        local frameW, frameH = get_design_resolution()
-        local viewW, viewH = self._viewSize.width, self._viewSize.height
-        if frameW ~= viewW or frameH ~= viewH then
-            self:OPSetViewSize(viewW, viewH)
-        end
-    end
 end
 
 -- 获取该配置文件的保存路径
 function Panel:GetSaveFilePath()
     if self._templateName then
-        local filePath = g_logic_editor.get_project_ui_template_path() .. self._templateName .. constant_uieditor.config_file_ext
-        return filePath
+        return g_logic_editor.get_ui_template_file_path(self._templateName)
     end
 end
 
@@ -471,6 +605,10 @@ function Panel:_pasteAsChildItem(destItem, index, conf)
         end
     end
 
+    if destItem and destItem:GetCfg()['lock'] and not table.is_empty(selItems) then
+        destItem:GetBtnInListView().chLock:SetCheck(false, true)
+    end
+
     --选中粘贴之后的控件
     self:SelectControlItems(selItems)
 
@@ -478,15 +616,23 @@ function Panel:_pasteAsChildItem(destItem, index, conf)
 end
 
 function Panel:_pasteAsFrontItem(destItem, conf)
-    local parentItem = destItem:GetParentItem()
-    local pos = table.find_v(parentItem:GetChildList(), destItem)
-    return self:_pasteAsChildItem(parentItem, pos, conf)
+    local parentItem = destItem and destItem:GetParentItem()
+    if parentItem then
+        local pos = table.find_v(parentItem:GetChildList(), destItem)
+        return self:_pasteAsChildItem(parentItem, pos, conf)
+    else
+        return self:_pasteAsChildItem(nil, nil, conf)
+    end
 end
 
 function Panel:_pasteAsBackItem(destItem, conf)
-    local parentItem = destItem:GetParentItem()
-    local pos = table.find_v(parentItem:GetChildList(), destItem) + 1
-    return self:_pasteAsChildItem(parentItem, pos, conf)
+    local parentItem = destItem and destItem:GetParentItem()
+    if parentItem then
+        local pos = table.find_v(parentItem:GetChildList(), destItem) + 1
+        return self:_pasteAsChildItem(parentItem, pos, conf)
+    else
+        return self:_pasteAsChildItem(nil, nil, conf)
+    end
 end
 
 function Panel:_doReload()
@@ -499,11 +645,13 @@ function Panel:RefreshSelItemAniPropertyConf(bScrollToTop)
     self.listAniProperty:DeleteAllSubItem()
     self.btnAddAni.OnClick = nil
 
-    if #self._selItems ~= 1 then
-        self.nodeOPAni:setVisible(false)
+    self.comboAni:SetString(self._curAniName or '')
+    self.editAddAni:SetString(self._curAniName or '')
+
+    local bShowAni = #self._selItems == 1
+    self.nodeAddAni:setVisible(bShowAni)
+    if not bShowAni then
         return
-    else
-        self.nodeOPAni:setVisible(true)
     end
 
     local item = self:GetSelectedControlItem()
@@ -514,24 +662,28 @@ function Panel:RefreshSelItemAniPropertyConf(bScrollToTop)
     self.btnAddAni.OnClick = function()
         local addAni = self.editAddAni:GetString()
         if not is_valid_str(addAni) then
-            self:ShowTips('请输入有效的动画名称')
+            message('请输入有效的动画名称')
             return
         end
 
         if self._curAniName == addAni and curEditAniConf then
             table.insert(curEditAniConf, constant_uisystem.default_ani_template_name)
             item:GetAniData()[addAni] = curEditAniConf
-            self:ShowTips('成功为动画[%s]增加一个子动画', addAni)
+            message('成功为动画[{1}]增加一个子动画', addAni)
             self:RefreshSelItemAniPropertyConf()
         elseif item:GetAniData()[addAni] == nil then
             item:GetAniData()[addAni] = {constant_uisystem.default_ani_template_name}
-            self:ShowTips('成功增加动画:%s', addAni)
+            message('成功增加动画:{1}', addAni)
 
             self._curAniName = addAni
-            self.comboAni:SetString(addAni)
+
+            self.root_item:ForEachItem(function(v)
+                v:_updateListViewItem()
+            end)
+
             self:RefreshSelItemAniPropertyConf()
         else
-            self:ShowTips('请将当前的动画切换到 [%s] 在执行添加动画', addAni)
+            message('请将当前的动画切换到 [{1}] 在执行添加动画', addAni)
         end
     end
 
@@ -613,7 +765,7 @@ function Panel:ShowTips(...)
         _delayShowTips('cancel')
     end
 
-    _delayShowTips = self._layer:DelayCall(3, function()
+    _delayShowTips = self._layer:DelayCall(1, function()
         self.lTips:SetString('')
     end)
 end
@@ -651,16 +803,31 @@ function Panel:OPShowCenterView()
 end
 
 function Panel:OPGenDlgCode()
-    local dirPath = g_logic_editor.get_project_res_path() .. '../src/'
-    local filePath = win_save_file('lua脚本代码', dirPath, true)
-    
-    if is_valid_str(filePath) then
-        filePath = filePath .. '.lua'
-        if not g_fileUtils:isFileExist(filePath) then
+    local dirPath = g_logic_editor.get_project_script_dialog_path()
+    if not dirPath then
+        message('脚本代码不存在')
+        return
+    end
 
+    if not is_valid_str(self._templateName) then
+        message('请先保存模板')
+        return
+    end
+
+    local filePath = win_save_file('lua脚本代码', dirPath)
+
+    if is_valid_str(filePath) then
+        if string.sub(filePath, -4) ~= '.lua' then
+            filePath = filePath .. '.lua'
+        end
+
+        filePath = dirPath .. filePath
+
+        if not g_fileUtils:isFileExist(filePath) then
             local content = string.gsub(constant_uieditor.editor_template_code, '__TEMPLATE__', self._templateName)
+            content = string.format(content, os.date('%Y-%m-%d %H:%M', os.time()))
             g_fileUtils:writeStringToFile(content, filePath)
-            win_explore_open_file(filePath)
+            win_explorer(filePath)
         end
     end
 end
@@ -682,28 +849,6 @@ function Panel:OPReloadFile()
         self:_doReload()
         self:EditPush()
         self:EditOnSave()
-    end
-end
-
---[[设置视图大小]]
-function Panel:OPSetViewSize(w, h)
-    self._viewSize = CCSize(w, h)
-
-    -- 这里改了会影响其他面板 所以每次切换面板的时候需要刷新这个size并重load(如果 view size 不一致的话)
-    local resolutionSize = g_native_conf['editor_design_resolution_size']
-    update_design_resolution(w, h, resolutionSize.width, resolutionSize.height)
-
-    self.comboResolution:SetString(string.format('分辨率%d %d', w, h))
-
-    local conf = self.root_item and self.root_item:DumpItemCfg()
-    self:_clearRootItem()
-
-    self.layerDevice:SetContentSize(w, h)
-    self.layerDevice.rectBorder:SetContentSize(w, h)
-    self.nodeSelFrames:SetContentSize(w, h)
-
-    if conf then
-        assert(self:_addConf(conf))
     end
 end
 
@@ -806,9 +951,14 @@ function Panel:AddUIControlItem(typeName, defCfg)
         end
     end
 
-    --选中新建的控件
-    self:SelectControlItem(addItem)
-    self:EditPush()
+    if addItem then
+        local pos = addItem:GetCtrl():getParent():ConvertToNodeSpace('50%', '50%')
+        addItem:GetCtrl():setPosition(pos)
+        addItem:RefreshItemConfig()
+        --选中新建的控件
+        self:SelectControlItem(addItem)
+        self:EditPush()
+    end
 end
 
 --复制当前选中的items
@@ -1115,63 +1265,79 @@ end
 
 -- 对齐选中对象列表
 function Panel:AlignSelect(alignType)
-    local ALIGN_TYPE = constant_uieditor.ALIGN_TYPE
-    assert(table.find_v(ALIGN_TYPE, alignType))
-
-    local selectList = self.root_item:GetBFSSelItems()
-    
-    if #selectList < 2 then
-        self:ShowTips('此操作请选中2个以上节点')
-        return
-    elseif alignType >= ALIGN_TYPE.H_EQUIDISTANCE and alignType <= ALIGN_TYPE.V_SUB_SPACE and #selectList < 3 then
-        self:ShowTips('此操作请选中3个以上节点')
+    if self.root_item == nil then
         return
     end
 
-    local curSelectedItem = self:GetSelectedControlItem()
+    local selectList = self.root_item:GetBFSSelItems()
+    if #selectList == 0 then
+        return
+    end
 
-    if alignType == ALIGN_TYPE.H_EQUIDISTANCE then
-        _alignH_EQUIDISTANCE(selectList)
-    elseif alignType == ALIGN_TYPE.V_EQUIDISTANCE then
-        _alignV_EQUIDISTANCE(selectList)
-    elseif alignType >= ALIGN_TYPE.H_ADD_SPACE and alignType <= ALIGN_TYPE.V_SUB_SPACE then
-        local space
-        if g_ui_event_mgr.is_ctrl_down() then
-            space = constant_uieditor.align_ctrl_move_len
-        elseif g_ui_event_mgr.is_alt_down() then
-            space = constant_uieditor.align_alt_move_len
-        elseif g_ui_event_mgr.is_shift_down() then
-            space = constant_uieditor.align_shift_move_len
-        else
-            space = 1
-        end
+    local ALIGN_TYPE = constant_uieditor.ALIGN_TYPE
+    assert(table.find_v(ALIGN_TYPE, alignType))
 
-        if alignType == ALIGN_TYPE.H_ADD_SPACE then
-            _alignH_ADD_SPACE(selectList, space)
-        elseif alignType == ALIGN_TYPE.H_SUB_SPACE then
-            _alignH_ADD_SPACE(selectList, -space)
-        elseif alignType == ALIGN_TYPE.V_ADD_SPACE then
-            _alignV_ADD_SPACE(selectList, space)
-        elseif alignType == ALIGN_TYPE.V_SUB_SPACE then
-            _alignV_ADD_SPACE(selectList, -space)
-        end
-    elseif alignType == ALIGN_TYPE.SAME_WIDTH then
-        local w, h = curSelectedItem:GetCtrl():GetContentSize()
-        _alignSyncSize(selectList, w, nil)
-    elseif alignType == ALIGN_TYPE.SAME_HEIGHT then
-        local w, h = curSelectedItem:GetCtrl():GetContentSize()
-        _alignSyncSize(selectList, nil, h)
-    elseif alignType == ALIGN_TYPE.SAME_SIZE then
-        _alignSyncSize(selectList, curSelectedItem:GetCtrl():GetContentSize())
+    if alignType >= ALIGN_TYPE.H_EQUIDISTANCE and alignType <= ALIGN_TYPE.V_SUB_SPACE and #selectList < 3 then
+        message('此操作请选中3个以上节点')
+        return
+    end
+
+    if #selectList == 1 then
+        self:_alignParent(alignType)
     else
-        _alignSyncPosition(curSelectedItem, selectList, alignType)
+        local curSelectedItem = self:GetSelectedControlItem()
+        if alignType == ALIGN_TYPE.H_EQUIDISTANCE then
+            _alignH_EQUIDISTANCE(selectList)
+        elseif alignType == ALIGN_TYPE.V_EQUIDISTANCE then
+            _alignV_EQUIDISTANCE(selectList)
+        elseif alignType >= ALIGN_TYPE.H_ADD_SPACE and alignType <= ALIGN_TYPE.V_SUB_SPACE then
+            local space
+            if g_ui_event_mgr.is_ctrl_down() then
+                space = constant_uieditor.align_ctrl_move_len
+            elseif g_ui_event_mgr.is_alt_down() then
+                space = constant_uieditor.align_alt_move_len
+            elseif g_ui_event_mgr.is_shift_down() then
+                space = constant_uieditor.align_shift_move_len
+            else
+                space = 1
+            end
+
+            if alignType == ALIGN_TYPE.H_ADD_SPACE then
+                _alignH_ADD_SPACE(selectList, space)
+            elseif alignType == ALIGN_TYPE.H_SUB_SPACE then
+                _alignH_ADD_SPACE(selectList, -space)
+            elseif alignType == ALIGN_TYPE.V_ADD_SPACE then
+                _alignV_ADD_SPACE(selectList, space)
+            elseif alignType == ALIGN_TYPE.V_SUB_SPACE then
+                _alignV_ADD_SPACE(selectList, -space)
+            end
+        elseif alignType == ALIGN_TYPE.SAME_WIDTH then
+            local w, h = curSelectedItem:GetCtrl():GetContentSize()
+            _alignSyncSize(selectList, w, nil)
+        elseif alignType == ALIGN_TYPE.SAME_HEIGHT then
+            local w, h = curSelectedItem:GetCtrl():GetContentSize()
+            _alignSyncSize(selectList, nil, h)
+        elseif alignType == ALIGN_TYPE.SAME_SIZE then
+            _alignSyncSize(selectList, curSelectedItem:GetCtrl():GetContentSize())
+        else
+            _alignSyncPosition(curSelectedItem, selectList, alignType)
+        end
     end
 
     self:RefreshSelItemPropertyConf()
     self:EditPush()
 end
 
-function Panel:SetNodePos(alignType)
+function Panel:_alignParent(alignType)
+    if self.root_item == nil then
+        return
+    end
+
+    local selItem = self:GetSelectedControlItem()
+    if selItem == nil then
+        return
+    end
+
     local ALIGN_TYPE = constant_uieditor.ALIGN_TYPE
     assert(table.find_v(ALIGN_TYPE, alignType))
     local sortedList = self.root_item:GetBFSSelItems()
@@ -1196,8 +1362,8 @@ function Panel:SetNodePos(alignType)
         -- 向下对齐
         for i, v in ipairs(sortedList) do
             local cfg = v:GetCfg()
-            cfg['anchor']['y'] = 0.5
-            cfg['pos']['y'] = '50%'
+            cfg['anchor']['x'] = 0.5
+            cfg['pos']['x'] = '50%'
             v:RefreshItemControl()
         end
     elseif alignType == ALIGN_TYPE.LEFT then
@@ -1220,22 +1386,56 @@ function Panel:SetNodePos(alignType)
         --水平对齐
         for i, v in ipairs(sortedList) do
             local cfg = v:GetCfg()
-            cfg['anchor']['x'] = 0.5
-            cfg['pos']['x'] = '50%'
+            cfg['anchor']['y'] = 0.5
+            cfg['pos']['y'] = '50%'
             v:RefreshItemControl()
         end
     else
-        print('not support align type', alignType)
+        local w, h = selItem:GetCtrl():getParent():GetContentSize()
+        if alignType == ALIGN_TYPE.SAME_WIDTH then
+            _alignSyncSize({selItem}, w, nil)
+        elseif alignType == ALIGN_TYPE.SAME_HEIGHT then
+            _alignSyncSize({selItem}, nil, h)
+        elseif alignType == ALIGN_TYPE.SAME_SIZE then
+            _alignSyncSize({selItem}, w, h)
+        else
+            print('not support align type', alignType)
+        end
     end
-
-    self:RefreshSelItemPropertyConf()
 end
 
 function Panel:OPSetPanelScale(scale)
-    scale = math.min(math.max(0.1, scale), 20)
+    local wPos = win_get_cursor_pos()
+    local cursorInDevicePos = self.layerDevice:convertToNodeSpace(wPos)
+    local preDevicePos = self.layerDevice:getParent():convertToNodeSpace(wPos)
+
+    scale = math.clamp(scale, 0.1, 20)
     self.layerDevice:setScale(scale)
     self.nodeSelFrames:setScale(scale)
-    self:ShowTips(string.format('缩放%d', math.round_number(scale * 100))..'%%')
+
+    -- local sPos = mat4_transformVector(self.layerDevice:getNodeToParentTransform(), cursorInDevicePos)
+    local sPos = self.layerDevice:getParent():convertToNodeSpace(self.layerDevice:convertToWorldSpace(cursorInDevicePos))
+    local curPosX, curPosY = self.layerDevice:getPosition()
+
+    local pos = ccp(curPosX + preDevicePos.x - sPos.x, curPosY + preDevicePos.y - sPos.y)
+    self.layerDevice:setPosition(pos)
+    self.nodeSelFrames:setPosition(pos)
+
+    self:ShowTips('缩放%d%%', math.round_number(scale * 100))
+    
+
+    if table.is_empty(self._selItems) then
+        return
+    end
+
+    if self._delayFixSelFrameTransform == nil then
+        self._delayFixSelFrameTransform = self._layer:DelayCall(0.1, function()
+            for _, item in ipairs(self._selItems) do
+                item:_updateSelFrameTransform()
+            end
+            self._delayFixSelFrameTransform = nil
+        end)
+    end
 end
 
 function Panel:MoveSelectedCtrl(offsetx, offsety)
@@ -1265,13 +1465,25 @@ end
 
 --将拖拽的配置拖动到指定的选中节点下(为选中则拖动到根节点下)
 function Panel:AddDragConfig(config, pt)
-    local item = self:_addConf(config, self:GetSelectedControlItem())
-    if item then
-        local ctrl = item:GetCtrl()
-        ctrl:setPosition(ctrl:getParent():convertToNodeSpace(pt))
-        item:RefreshItemConfig()
-        self:SelectControlItem(item)
-        self:EditPush()
+    if is_string(config) then
+        config = table.deepcopy(g_uisystem.load_template(config))
+    end
+    config['lock'] = true
+
+    local selItem = self:GetSelectedControlItem()
+    local copyConf = {listPos = {pt}, listCtrl = {config}}
+    if g_ui_event_mgr.is_ctrl_down() then
+        if #self:_pasteAsBackItem(selItem, copyConf) > 0 then
+            self:EditPush()
+        end
+    elseif g_ui_event_mgr.is_alt_down() then
+        if #self:_pasteAsFrontItem(selItem, copyConf) > 0 then
+            self:EditPush()
+        end
+    else
+        if #self:_pasteAsChildItem(selItem, nil, copyConf) > 0 then
+            self:EditPush()
+        end
     end
 end
 
@@ -1282,24 +1494,6 @@ function Panel:OpenContainFolder()
         os.execute('explorer /select, ' .. string.gsub(path, '/', '\\'))
     else
         message('文件夹不存在')
-    end
-end
-
-function Panel:OPWrapNode(level)
-    if level == 0 then
-        self.root_item:ForEachItem(function(v)
-            self.listObjects:ExpandItem(v:GetBtnInListView(), true)
-        end)
-    else
-        local wrapItems = {self.root_item}
-        for i = 1, level do
-            local childList = {}
-            for _, v in ipairs(wrapItems) do
-                self.listObjects:ExpandItem(v:GetBtnInListView(), i ~= level)
-                table.arr_extend(childList, v:GetChildList())
-            end
-            wrapItems = childList
-        end
     end
 end
 
@@ -1317,4 +1511,37 @@ function Panel:OPChangeNodeSizeFormat(osx, osy)
     end
 
     self:RefreshSelItemPropertyConf()
+end
+
+function Panel:OPPreviewPanel()
+    if not self.root_item then
+        message('空节点不能预览')
+        return
+    end
+
+    if self:NeedSave() then
+        message('需要保存后才能预览')
+        return
+    end
+
+    local appDir = win_get_exe_dir()
+    local workdir = win_startup_conf['workdir']
+    local templateName = self:GetTemplateName()
+    local projResPath = g_logic_editor.get_project_res_path()
+    local lang = g_native_conf['cur_multilang_index']
+    local designSize = g_native_conf['editor_design_resolution_size']
+    local appName = self._curAniName and string.format('template[%s]-ani-name[%s]', templateName, self._curAniName) or string.format('template[%s]', templateName)
+    local cmd =string.format('start %s -workdir %s -preview_template %s -preview_res_path %s -preview_lang %s -preview_design_size %dX%d -preview_ani_name %s -app_name %s -id preview',
+        appDir, workdir, templateName, projResPath, lang, designSize.width, designSize.height, tostring(self._curAniName), appName)
+
+    printf('cmd:%s', cmd)
+    os.execute(cmd)
+end
+
+function Panel:OPSelectAllItems()
+    local items = {}
+    self.root_item:ForEachItem(function(item)
+        table.insert(items, item)
+    end)
+    self:SelectControlItems(items)
 end

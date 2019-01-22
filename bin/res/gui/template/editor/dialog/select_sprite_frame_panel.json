@@ -39,8 +39,7 @@
 						"y":"50%"
 					},
 					"horzBorder":50,
-					"template":"editor/dialog/select_sprite_frame_item",
-					"initCount":5
+					"template":"editor/dialog/select_sprite_frame_item"
 				}
 			]
 		}

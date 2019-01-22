@@ -1,0 +1,21 @@
+{
+    "src": [
+        "base",
+        "cocos",
+        "cocos_ext",
+        "global_utils",
+        "logic/config/constant/constant_uisystem.lua",
+        "logic/config/__customize_def_conf.lua",
+        "logic/dialog/common/dlg_common_tips_panel.lua",
+        "logic/rich_label_init.lua",
+        "main.lua"
+    ],
+    "res": [
+        "shader",
+        "gui/default",
+        "gui/template/common",
+        "gui/template/default",
+        "gui/ani_template",
+        "gui/fonts"
+    ]
+}

@@ -83,26 +83,9 @@
 				},
 				{
 					"type_name":"CCCombobox",
-					"name":"comboOther",
-					"pos":{
-						"x":162,
-						"y":"50%"
-					},
-					"size":{
-						"height":25,
-						"width":76
-					},
-					"anchor":{
-						"x":0,
-						"y":0.5
-					},
-					"text":"其他"
-				},
-				{
-					"type_name":"CCCombobox",
 					"name":"comboAddActions",
 					"pos":{
-						"x":242,
+						"x":162,
 						"y":"50%"
 					},
 					"size":{
@@ -181,7 +164,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/folderopen1.png"
+					"frame1":"editor_res/folderopen1.png",
+					"enableText":false,
+					"tips":"打开"
 				},
 				{
 					"type_name":"CCButton",
@@ -195,7 +180,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/page_white.png"
+					"frame1":"editor_res/page_white.png",
+					"enableText":false,
+					"tips":"新增"
 				},
 				{
 					"type_name":"CCButton",
@@ -209,7 +196,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/disk.png"
+					"frame1":"editor_res/disk.png",
+					"enableText":false,
+					"tips":"保存"
 				},
 				{
 					"type_name":"CCButton",
@@ -223,7 +212,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/disk_multiple.png"
+					"frame1":"editor_res/disk_multiple.png",
+					"enableText":false,
+					"tips":"另存"
 				},
 				{
 					"type_name":"CCRectBorder",
@@ -254,7 +245,9 @@
 						"y":0.7
 					},
 					"9sprite":false,
-					"frame1":"editor_res/refresh.png"
+					"frame1":"editor_res/refresh.png",
+					"enableText":false,
+					"tips":"刷新"
 				},
 				{
 					"type_name":"CCButton",
@@ -268,7 +261,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/redo.png"
+					"frame1":"editor_res/redo.png",
+					"enableText":false,
+					"tips":"redo"
 				},
 				{
 					"type_name":"CCButton",
@@ -282,7 +277,9 @@
 						"width":16
 					},
 					"9sprite":false,
-					"frame1":"editor_res/undo.png"
+					"frame1":"editor_res/undo.png",
+					"enableText":false,
+					"tips":"undo"
 				},
 				{
 					"type_name":"CCRectBorder",
@@ -301,19 +298,17 @@
 					"type_name":"CCButton",
 					"name":"btnOpenFolder",
 					"pos":{
-						"x":"i10",
+						"x":"i19",
 						"y":"50%"
 					},
 					"size":{
 						"height":16,
 						"width":16
 					},
-					"anchor":{
-						"x":1,
-						"y":0.5
-					},
 					"9sprite":false,
-					"frame1":"editor_res/folderopen1.png"
+					"frame1":"editor_res/open.png",
+					"enableText":false,
+					"tips":"打开配置目录"
 				}
 			]
 		},
@@ -371,7 +366,8 @@
 						"width":15
 					},
 					"text":"<",
-					"fontSize":15
+					"fontSize":15,
+					"tips":"文档标签左移"
 				},
 				{
 					"type_name":"CCButton",
@@ -385,7 +381,8 @@
 						"width":15
 					},
 					"text":">",
-					"fontSize":15
+					"fontSize":15,
+					"tips":"文档标签右移"
 				}
 			]
 		},

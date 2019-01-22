@@ -1,4 +1,4 @@
-Panel = g_panel_mgr.new_panel_class('editor/uieditor/uieditor_edit_cardinalspline_action')
+Panel = g_panel_mgr.new_panel_class('editor/dialog/uieditor_edit_cardinalspline_action')
 
 local function _get_x_y(content)
 	local splitContents = string.split(content, ' ')
@@ -459,7 +459,7 @@ function Panel:CreateConrollerPoint(pos)
 		pos = ccp(0, 0)
 	end
 
-	local layer = g_uisystem.load_template_create('editor/uieditor/edit_action/uieditor_action_point', self.container)
+	local layer = g_uisystem.load_template_create('editor/dialog/edit_action/uieditor_action_point', self.container)
 	local index = #self._allControllerPoints + 1
 	local controllerPoint = ControllerPoint:New(self, layer, pos, index)
 	if self._isCardinalSplineBy and index ~= 1 then

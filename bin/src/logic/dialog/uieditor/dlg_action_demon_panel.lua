@@ -2,17 +2,8 @@
 Panel = g_panel_mgr.new_panel_class('editor/uieditor/uieditor_action_demon')
 
 -- overwrite
-function Panel:init_panel(actionName)
-    self.startPositionX = self.sp:getPositionX()
-    self.high = self.sp:getPositionY()
-    self.drawNode = cc.DrawNode:create()
-    self.bg:addChild(self.drawNode)
-
+function Panel:init_panel(actionName)    
     self:updateAction(actionName)
-    self:get_layer():DelayCall(0.01, function()
-        self:everyFrame()
-        return 0.01
-    end)
 end
 
 function Panel:updateAction(actionName)
@@ -20,25 +11,28 @@ function Panel:updateAction(actionName)
         self:close_panel()
     else
         self.actionName = actionName
-        self.sp:stopAllActions()
-        self.sp:SetPosition('25%','50%')
-        self.sp:PlayAnimation(actionName)
-        self:reset()
+
+        local __temp_path = string.format("%s/action_demon_config/__temp_generate_%s.txt", g_fileUtils:getWritablePath(), actionName)
+        if g_fileUtils:isFileExist(__temp_path) then
+            local info_list = table.read_from_file(__temp_path)
+            self:_drawActionByActionConfig(info_list)
+        else
+            editor_utils_generate_action_info(actionName, true, function(info_list)
+                self:_drawActionByActionConfig(info_list)
+            end)
+        end
     end
 end
 
-function Panel:reset()
-    self.lastPosition = cc.p(0,0)
-    self.drawNode:clear()
-    self.frame = 0
-end
-
-function Panel:everyFrame()
-    if self.frame ~= nil and self.frame < 90 then
-        local curPositionX = self.sp:getPositionX()
-        self.frame = self.frame + 1
-        local curPosition = cc.p(curPositionX - self.startPositionX,self.frame/90 * self.high)
-        self.drawNode:drawSegment(self.lastPosition,curPosition,2,cc.c4f(0, 1, 0, 1))
-        self.lastPosition = curPosition
+function Panel:_drawActionByActionConfig(posList)
+    if not self:get_layer():IsValid() then
+        return
+    end
+    local drawNode = cc.DrawNode:create()
+    self.node:AddChild(nil, drawNode)
+    local lastPosition = posList[1]
+    for _, pos in ipairs(posList) do
+        drawNode:drawSegment(lastPosition, pos, 2, cc.c4f(0, 1, 0, 1))
+        lastPosition = pos
     end
 end

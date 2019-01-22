@@ -1,9 +1,5 @@
 {
 	"type_name":"CCNode",
-	"size":{
-		"height":"i90",
-		"width":"100%"
-	},
 	"anchor":{
 		"x":0,
 		"y":0
@@ -55,9 +51,13 @@
 				{
 					"type_name":"CCLayer",
 					"name":"layerTouch",
-					"pos":{
-						"x":"50%",
-						"y":"50%"
+					"size":{
+						"height":"i25",
+						"width":"100%"
+					},
+					"anchor":{
+						"x":0,
+						"y":0
 					},
 					"touchEnabled":true
 				},
@@ -120,7 +120,7 @@
 							"name":"editPanelName",
 							"size":{
 								"height":"100%",
-								"width":"i268"
+								"width":"i86"
 							},
 							"anchor":{
 								"x":0,
@@ -129,52 +129,24 @@
 							"fontSize":16
 						},
 						{
-							"type_name":"CCButton",
-							"name":"btnPlayAni",
-							"pos":{
-								"x":"i237",
-								"y":"i13"
-							},
-							"size":{
-								"height":25,
-								"width":47
-							},
-							"text":"播放",
-							"fontSize":16
-						},
-						{
-							"type_name":"CCCombobox",
-							"name":"comboAni",
-							"pos":{
-								"x":"i73",
-								"y":"50%"
-							},
-							"size":{
-								"height":25,
-								"width":138
-							},
-							"anchor":{
-								"x":1,
-								"y":0.5
-							},
-							"text":"动画"
-						},
-						{
 							"type_name":"CCCheckButton",
 							"name":"checkShowAni",
 							"pos":{
-								"x":"i25",
+								"x":"i17",
 								"y":"50%"
 							},
 							"size":{
 								"height":30,
 								"width":30
 							},
-							"frame3":"",
-							"text":"编辑",
-							"fontSize":15,
+							"scale":{
+								"x":0.72,
+								"y":0.72
+							},
+							"text":"编辑动画",
+							"fontSize":20,
 							"textOffset":{
-								"x":"50%-30",
+								"x":"50%-55",
 								"y":"50%"
 							}
 						}
@@ -184,6 +156,7 @@
 		},
 		{
 			"type_name":"CCLayer",
+			"lock":true,
 			"pos":{
 				"x":0,
 				"y":"i0"
@@ -312,6 +285,7 @@
 		},
 		{
 			"type_name":"CCLayer",
+			"lock":true,
 			"pos":{
 				"x":"i0",
 				"y":"i0"
@@ -346,7 +320,7 @@
 					}
 				},
 				{
-					"type_name":"CCVerTemplateList",
+					"type_name":"CCVerAsyncList",
 					"name":"listProperty",
 					"pos":{
 						"x":"50%",
@@ -356,27 +330,28 @@
 						"height":"i0",
 						"width":0
 					},
-					"template":"editor/edit/uieditor_edit_edit",
-					"bounces":false
+					"template":"editor/edit/uieditor_edit_empty_container",
+					"bounces":false,
+					"notAutoHideLen":200
 				}
 			]
 		},
 		{
 			"type_name":"CCLayer",
 			"name":"layerActionAni",
+			"lock":true,
 			"pos":{
-				"x":"i0",
-				"y":"i0"
+				"x":"i250",
+				"y":"i25"
 			},
 			"size":{
-				"height":"i25",
+				"height":"i50",
 				"width":250
 			},
 			"anchor":{
 				"x":1,
 				"y":1
 			},
-			"hide":true,
 			"touchEnabled":true,
 			"child_list":[
 				{
@@ -389,10 +364,6 @@
 				},
 				{
 					"type_name":"CCScale9Sprite",
-					"size":{
-						"height":"i30",
-						"width":245
-					},
 					"anchor":{
 						"x":0,
 						"y":0
@@ -400,9 +371,8 @@
 				},
 				{
 					"type_name":"CCNode",
-					"name":"nodeOPAni",
 					"pos":{
-						"x":"50%",
+						"x":0,
 						"y":"i0"
 					},
 					"size":{
@@ -410,31 +380,79 @@
 						"width":"100%"
 					},
 					"anchor":{
-						"x":0.5,
+						"x":0,
 						"y":1
 					},
-					"hide":true,
 					"child_list":[
 						{
 							"type_name":"CCButton",
-							"name":"btnAddAni",
+							"name":"btnDelAni",
 							"pos":{
-								"x":45,
-								"y":14
+								"x":"i27",
+								"y":"i15"
 							},
 							"size":{
 								"height":25,
-								"width":76
+								"width":47
 							},
-							"text":"增加动画",
-							"fontSize":15
+							"text":"删除",
+							"fontSize":16
 						},
+						{
+							"type_name":"CCCombobox",
+							"name":"comboAni",
+							"pos":{
+								"x":"i51",
+								"y":"50%"
+							},
+							"size":{
+								"height":25,
+								"width":145
+							},
+							"anchor":{
+								"x":1,
+								"y":0.5
+							},
+							"text":"动画"
+						},
+						{
+							"type_name":"CCButton",
+							"name":"btnPlayAni",
+							"pos":{
+								"x":"i222",
+								"y":"i15"
+							},
+							"size":{
+								"height":25,
+								"width":47
+							},
+							"text":"播放",
+							"fontSize":16
+						}
+					]
+				},
+				{
+					"type_name":"CCNode",
+					"name":"nodeAddAni",
+					"pos":{
+						"x":0,
+						"y":"i30"
+					},
+					"size":{
+						"height":30,
+						"width":"100%"
+					},
+					"anchor":{
+						"x":0,
+						"y":1
+					},
+					"child_list":[
 						{
 							"type_name":"CCEditBoxExt",
 							"name":"editAddAni",
 							"pos":{
 								"x":242,
-								"y":2
+								"y":4
 							},
 							"size":{
 								"height":25,
@@ -462,6 +480,20 @@
 									"color":8551809
 								}
 							]
+						},
+						{
+							"type_name":"CCButton",
+							"name":"btnAddAni",
+							"pos":{
+								"x":43,
+								"y":16
+							},
+							"size":{
+								"height":25,
+								"width":76
+							},
+							"text":"增加动画",
+							"fontSize":15
 						}
 					]
 				},
@@ -473,7 +505,7 @@
 						"y":0
 					},
 					"size":{
-						"height":"i30",
+						"height":"i65",
 						"width":0
 					},
 					"anchor":{
@@ -497,23 +529,6 @@
 			},
 			"color":1907484,
 			"child_list":[
-				{
-					"type_name":"CCCombobox",
-					"name":"comboResolution",
-					"pos":{
-						"x":"i5",
-						"y":"50%"
-					},
-					"size":{
-						"height":25,
-						"width":169
-					},
-					"anchor":{
-						"x":1,
-						"y":0.5
-					},
-					"text":"当前分辨率"
-				},
 				{
 					"type_name":"RichLabel",
 					"name":"lTips",

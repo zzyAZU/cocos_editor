@@ -1,0 +1,19 @@
+{
+	"type_name":"CCButton",
+	"pos":{
+		"y":430,
+		"x":479
+	},
+	"size":{
+		"height":28,
+		"width":135
+	},
+	"anchor":{
+		"y":1,
+		"x":0
+	},
+	"fontSize":"20",
+	"zoomScale":1,
+	"swallow":false,
+	"noEventAfterMove":true
+}

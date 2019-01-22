@@ -1,4 +1,4 @@
-Panel = g_panel_mgr.new_panel_class('editor/uieditor/uieditor_edit_bezier_action')
+Panel = g_panel_mgr.new_panel_class('editor/dialog/uieditor_edit_bezier_action')
 
 SetPositionCommand = CreateClass()
 

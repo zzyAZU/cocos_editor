@@ -4,7 +4,6 @@
 local constant_uieditor = g_constant_conf['constant_uieditor']
 local constant_uisystem = g_constant_conf['constant_uisystem']
 
--- 貌似复制太快马上再获取剪切板的内容会获得空
 Panel = g_panel_mgr.new_panel_class('editor/anieditor/anieditor_config_view')
 
 function Panel:_initMainPanel()
@@ -67,9 +66,12 @@ end
 
 -- 保存 panel 对应的配置
 function Panel:SaveConfig(templateName)
-    if templateName ~= nil then
-        self._templateName = templateName
+    local tmpName = string.match(templateName, '(.+)%.json')
+    if tmpName then
+        templateName = tmpName
     end
+
+    self._templateName = templateName
 
     g_ani_multi_doc_manager.save_template_conf(self)
 
@@ -150,8 +152,7 @@ end
 -- 获取该配置文件的保存路径
 function Panel:GetSaveFilePath()
     if self._templateName then
-        local filePath = g_logic_editor.get_project_ani_template_path() .. self._templateName .. constant_uieditor.config_file_ext
-        return filePath
+        return g_logic_editor.get_ani_template_file_path(self._templateName)
     end
 end
 
@@ -179,6 +180,19 @@ function Panel:_addAniConf(conf, parentItem, index, bNotUpdate)
     item['_conf'] = conf
     self:RefreshItemName(item)
     
+    item.btn:HandleMouseEvent()
+    item.btn.newHandler.OnMouseMove = function(bInside, pos, bFirst)
+        if bFirst then
+            if bInside then
+                editor_utils_show_ease_action_demo(conf.type_name)
+            end
+            item._touchBg_:setVisible(bInside)
+        end
+        if not bInside then
+            g_panel_mgr.close('uieditor.dlg_action_demon_panel')
+        end
+    end
+
     item.btn.OnClick = function()
         if g_ui_event_mgr.is_ctrl_down() then
             local bSelect = self.listObjects:IsItemSelected(item)
@@ -305,6 +319,39 @@ function Panel:_doReload()
     self:RefreshSelItemPropertyConf()
 end
 
+-- 递归查找对应类型名
+local function _findTypeNameInList(typeName, infoList)
+    if infoList['name'] then
+        local bExists, info = _findTypeNameInList(typeName, infoList.list) 
+        return bExists
+    end
+    for _, typeInfo in pairs(infoList) do
+        if typeInfo['name'] then
+            local bExists, info = _findTypeNameInList(typeName, typeInfo.list)
+            if bExists then
+                return true
+            end
+            for key, v in pairs(typeInfo) do
+                if key ~= 'name' and key ~= 'list' then
+                    if v['name'] then
+                        local bExists, info = _findTypeNameInList(typeName, v.list)
+                        if bExists then
+                            return true
+                        end
+                    else
+                        if v[1] == typeName then
+                            return true
+                        end
+                    end
+                end
+            end
+        else
+            if typeInfo[1] == typeName then
+                return true
+            end
+        end
+    end
+end
 
 --[[刷新一下选中按钮的属性列表]]
 function Panel:RefreshSelItemPropertyConf(bScrollToTop)
@@ -318,32 +365,49 @@ function Panel:RefreshSelItemPropertyConf(bScrollToTop)
 
     local conf = item['_conf']
     local type_name = conf['type_name']
-    local editInfo = constant_uieditor.ani_edit_info[type_name]
 
     local ani_type_name_info = {}
-    for _, info in ipairs(constant_uieditor.ani_edit_types) do
-        local bExists = table.find_if(info.list, function(_, v)
-            return v[1] == type_name
-        end)
+    local bExists
 
+    -- basic ani type conversion
+    for _, typeInfo in pairs(constant_uieditor.ani_edit_types) do
+        bExists = _findTypeNameInList(type_name, typeInfo)
         if bExists then
-            for _, i in ipairs(info.list) do
-                table.insert(ani_type_name_info, {i[1], i[1]})
-            end
+            ani_type_name_info = constant_uieditor.ani_edit_types_convert_info[typeInfo.name]
             break
         end
     end
+
+    if not bExists then
+        -- spec ani type conversion
+        for _, typeInfo in ipairs(constant_uieditor.spect_ani_edit_types.list) do
+            bExists, info = table.find_if(typeInfo.list, function(_, v)
+                return v[1] == type_name
+            end)
+            if bExists then
+                for _, i in ipairs(typeInfo.list) do
+                    table.insert(ani_type_name_info, {i[1], i[1]})
+                end
+                break
+            end
+        end
+    end
+
+    if not bExists then
+        return
+    end
+
     -- type_name
     local parm = {
         name = '类型',
         list = ani_type_name_info,
     }
-    local ctrl = editor_utils_create_edit_ctrls('edit_type_combo', type_name, parm, nil, function(value)
+    local edit_item = editor_utils_create_edit_ctrls('edit_type_combo', type_name, parm, nil, function(value)
         -- change type
         local def = constant_uieditor.ani_edit_info[value]['def'] or {}
         def = table.copy(def)
         for k, v in pairs(conf) do
-            if def[k] ~= nil then
+            if def[k] ~= nil and is_type_arch_equal(def[k], v) then
                 def[k] = v
             end
         end
@@ -354,15 +418,29 @@ function Panel:RefreshSelItemPropertyConf(bScrollToTop)
         self:RefreshItemName(item)
         self:EditPush()
         self:RefreshSelItemPropertyConf()
-    end):GetCtrl()
+        g_panel_mgr.close('uieditor.dlg_action_demon_panel')
+    end)
+    local ctrl = edit_item:GetCtrl()
     self.listProperty:AddControl(ctrl)
 
+    edit_item.combo.OnMenuMouseMove = function(bMoveInside, text, itemName)
+        if bMoveInside then
+            editor_utils_show_ease_action_demo(text)
+        else
+            g_panel_mgr.close('uieditor.dlg_action_demon_panel')
+        end
+    end
+
+    local editInfo = constant_uieditor.ani_edit_info[type_name]
     for _, info in ipairs(editInfo.edit_attrs or {}) do
         local attr = info['attr']
-        local ctrl = editor_utils_create_edit_ctrls(info['tp'], conf[attr], info['parm'], conf, function(value)
+        local ctrl = editor_utils_create_edit_ctrls(info['tp'], conf[attr] or editInfo.def[attr], info['parm'], conf, function(value)
             conf[attr] = value
             self:EditPush()
             self:RefreshItemName(item)
+            if info['parm']['is_reload'] then
+                self:RefreshSelItemPropertyConf()
+            end
         end):GetCtrl()
 
         self.listProperty:AddControl(ctrl)
@@ -374,12 +452,11 @@ function Panel:RefreshSelItemPropertyConf(bScrollToTop)
     if bScrollToTop then
         self.listProperty:ScrollToTop()
     else
-        self.listProperty:ResetContentOffset() 
+        self.listProperty:ResetContentOffset()
     end
 end
 
 function Panel:_tryAddEditActionAttributeBtn(type_name, conf, item)
-
     local editActionInfo = constant_uieditor.need_custome_edit_actions[type_name]
     if not editActionInfo then
         return
@@ -399,9 +476,7 @@ function Panel:_tryAddEditActionAttributeBtn(type_name, conf, item)
             g_ani_multi_doc_manager.save_file(self, self:GetTemplateName())
         end)
     end):GetCtrl()
-    self.listProperty:AddControl(ctrl)
-
-    
+    self.listProperty:AddControl(ctrl)    
 end
 
 function Panel:RefreshItemName(item)

@@ -106,6 +106,20 @@ function Panel:_initUIEditorBase()
         end
     end
 
+    -- 拖拽打开文件
+    self._layer:HandleMouseEvent()
+    self._layer.OnDropFile = function(filePaths)
+        local project_res_path = g_logic_editor:get_project_ani_template_path()
+        local pattern = string.format('^%s(.+)%%.json$', project_res_path)
+
+        for _, filePath in ipairs(filePaths) do
+            local templateName = string.match(filePath, pattern)
+            if templateName then
+                g_ani_multi_doc_manager.open_file(templateName)
+            end
+        end
+    end
+
     _check_panel_exists_onclick(self.btnOpenFolder, function(curPanel) curPanel:OpenContainFolder() end)
 
     ----------------------------file
@@ -266,28 +280,17 @@ function Panel:_initUIEditorBase()
         end)
     end
 
-    self.comboOther:AddMenuItem('设置', function()
-        g_panel_mgr.show('editor.dlg_setting_panel')
-    end)
-
-    self.comboAddActions.OnMouseMoveInside = function(text, itemName)
-        self:_showActionDemon(text, itemName)
-    end
-
-    -- create ani types
-    for _, groupInfo in ipairs(constant_uieditor.ani_edit_types) do
-        local popUpItem = self.comboAddActions:AddPopupMenuItem(groupInfo.name)
-        for _, typeInfo in ipairs(groupInfo.list) do
-            self.comboAddActions:AddMenuItem(typeInfo[2] or typeInfo[1], nil, popUpItem, function()
-                _curPanel(function(panel)
-                    local defConf = constant_uieditor.ani_edit_info[typeInfo[1]].def
-                    panel:OPAddAniConfig(typeInfo[1], defConf or {})
-                    g_panel_mgr.close('uieditor.dlg_action_demon_panel')
-                end)
-            end)
+    self.comboAddActions.OnMenuMouseMove = function(bMoveInside, text, itemName)
+        if bMoveInside then
+            editor_utils_show_ease_action_demo(text)
+        else
+            g_panel_mgr.close('uieditor.dlg_action_demon_panel')
         end
     end
 
+    -- create ani types
+    self:_createPopupMenuItem(constant_uieditor.ani_edit_types)
+    
     -- create spec ani types
     local popUpItem = self.comboAddActions:AddPopupMenuItem(constant_uieditor.spect_ani_edit_types.name)
     for _, groupInfo in ipairs(constant_uieditor.spect_ani_edit_types.list) do
@@ -302,6 +305,7 @@ function Panel:_initUIEditorBase()
             end)
         end
     end
+
 end
 
 -- 新创建一个 uieditor config view
@@ -309,17 +313,37 @@ function Panel:NewAniEditorPanel(templateName)
     return g_panel_mgr.show_multiple_with_parent('dlg_anieditor_config_view_panel', self.multiDocNode, templateName)
 end
 
-function Panel:_showActionDemon(text, itemName)
-    for i,key in ipairs(constant_uieditor.show_demon_anctions) do
-        if key == text then
-            if(not g_panel_mgr.get_panel('uieditor.dlg_action_demon_panel')) then --未打开
-                g_panel_mgr.show_in_top_scene('uieditor.dlg_action_demon_panel',text)
-            else 
-                g_panel_mgr.run_on_panel('uieditor.dlg_action_demon_panel', function(panel)
-                    panel:updateAction(text)
-                end)
+function Panel:_createPopupMenuItem(infoList, popUpItem)
+    if infoList['name'] then
+        local popUpItemNodeType = self.comboAddActions:AddPopupMenuItem(infoList.name, popUpItem)
+        self:_createPopupMenuItem(infoList.list, popUpItemNodeType) 
+    else
+        for _, typeInfo in pairs(infoList) do
+            if typeInfo['name'] then
+                local popUpItemNodeType = self.comboAddActions:AddPopupMenuItem(typeInfo.name, popUpItem)
+                self:_createPopupMenuItem(typeInfo.list, popUpItemNodeType)
+                for key, v in pairs(typeInfo) do
+                    if key ~= 'name' and key ~= 'list' then
+                        if v['name'] then
+                            self:_createPopupMenuItem(v, popUpItem)
+                        else
+                            self:_createChildMenuItem(v, popUpItem)
+                        end
+                    end
+                end
+            else
+                self:_createChildMenuItem(typeInfo, popUpItem)
             end
-            return
         end
     end
+end
+
+function Panel:_createChildMenuItem(typeInfo, popUpItem)
+    self.comboAddActions:AddMenuItem(typeInfo[2] or typeInfo[1], nil, popUpItem, function()
+        _curPanel(function(panel)
+            local defConf = constant_uieditor.ani_edit_info[typeInfo[1]].def
+            panel:OPAddAniConfig(typeInfo[1], defConf or {})
+            g_panel_mgr.close('uieditor.dlg_action_demon_panel')
+        end)
+    end)
 end

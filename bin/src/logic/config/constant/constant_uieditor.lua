@@ -11,14 +11,6 @@ controls = {
                 name = "CCLayer",
             },
             {
-                text_name = "彩色层",
-                name = "CCLayerColor",
-            },
-            {
-                text_name = "渐变层",
-                name = "CCLayerGradient",
-            },
-            {
                 text_name = "普通按钮",
                 name = "CCButton",
                 defConf = {
@@ -39,12 +31,28 @@ controls = {
                 name = "CCSprite",
             },
             {
-                text_name = "CCSizeSprite",
+                text_name = "九宫格",
+                name = "CCScale9Sprite",
+            },
+            {
+                text_name = "循环纹理",
+                name = "RepeatSprite",
+            },
+            {
+                text_name = "缩放精灵",
                 name = "CCSizeSprite",
             },
             {
-                text_name = "九宫格",
-                name = "CCScale9Sprite",
+                text_name = "彩色层",
+                name = "CCLayerColor",
+            },
+            {
+                text_name = "渐变层",
+                name = "CCLayerGradient",
+            },
+            {
+                text_name = "圆形渐变层",
+                name = "LayerRadialGradient",
             },
             {
                 text_name = "动画",
@@ -59,16 +67,12 @@ controls = {
                 name = "CCSkeletonAnimation",
             },
             {
-                text_name = "PU粒子3d动画",
-                name = "CCPUParticleSystem3D",
+                text_name = "Live2DSprite",
+                name = "Live2DSprite",
             },
             {
                 text_name = "残影",
                 name = "CCMotionMask",
-            },
-            {
-                text_name = "Live2DSprite",
-                name = "Live2DSprite",
             },
         },
     },
@@ -127,6 +131,10 @@ controls = {
                 text_name = "Sprite3D",
                 name = "Sprite3D",
             },
+            {
+                text_name = "PU粒子3d动画",
+                name = "CCPUParticleSystem3D",
+            },
         },
     },
     {
@@ -177,13 +185,27 @@ controls = {
             },
             {
                 text_name = "水平异步容器",
-                name = "CCHorzAsyncList",
+                name = "CCAsyncHorzContainer",
                 defConf = {
                     initCount = 1,
                 }
             },
             {
                 text_name = "垂直异步容器",
+                name = "CCAsyncVerContainer",
+                defConf = {
+                    initCount = 1,
+                }
+            },
+            {
+                text_name = "水平异步滚动容器",
+                name = "CCHorzAsyncList",
+                defConf = {
+                    initCount = 1,
+                }
+            },
+            {
+                text_name = "垂直异步滚动容器",
                 name = "CCVerAsyncList",
                 defConf = {
                     initCount = 1,
@@ -261,13 +283,11 @@ pos_quick_setting = {
             text_name = 'y值转换               0',
             att_type = 2,
             op_type = 1,
-            list = tramsform_base_config
         },
         {
             text_name = 'y百分比转换           0%',
             att_type = 2,
             op_type = 2,
-            list = tramsform_base_config
         },
         {
             text_name = 'y倒数转换             i0',
@@ -284,152 +304,48 @@ size_quick_setting = {
             text_name = 'width值转换             0',
             att_type = 1,
             op_type = 1,
-            list = tramsform_base_config
         },
         {
             text_name = 'width百分比转换         0%',
             att_type = 1,
             op_type = 2,
-            list = tramsform_base_config
         },
         {
             text_name = 'width倒数转换           i0',
             att_type = 1,
             op_type = 3,
-            list = tramsform_base_config
         },
         {
             text_name = 'height值转换            0',
             att_type = 2,
             op_type = 1,
-            list = tramsform_base_config
         },
         {
             text_name = 'height百分比转换        0%',
             att_type = 2,
             op_type = 2,
-            list = tramsform_base_config
         },
         {
             text_name = 'height倒数转换          i0',
             att_type = 2,
             op_type = 3,
-            list = tramsform_base_config
         },
     }
-}
-
-resolution_setting = {
-    {
-        name = "default",
-        w = 1280,
-        h = 720,
-    },
-    {
-        name = "iPhone 5",
-        w = 1136,
-        h = 640,
-    },
-    {
-        name = "iPhone 6",
-        w = 1334,
-        h = 750,
-    },
-    {
-        name = "iPhone 6 Plus / Glaxy S4",
-        w = 1920,
-        h = 1080,
-    },
-    {
-        name = "Nexus S",
-        w = 480,
-        h = 800,
-    },
-    {
-        name = "Nexus 7",
-        w = 800,
-        h = 1200,
-    },
-    {
-        name = "Nexus 4",
-        w = 768,
-        h = 1200,
-    },
-    {
-        name = "Nexus 1000",
-        w = 2560,
-        h = 1600,
-    },
-    {
-        name = "960 640",
-        w = 960,
-        h = 640,
-    },
-    {
-        name = "WXGA Tablet",
-        w = 1280,
-        h = 800,
-    },
-    {
-        name = "WSVGA Tablet",
-        w = 1024,
-        h = 600,
-    },
-    {
-        name = "FWVGA",
-        w = 480,
-        h = 854,
-    },
-    {
-        name = "HVGA",
-        w = 320,
-        h = 480,
-    },
-    {
-        name = "QVGA",
-        w = 240,
-        h = 320,
-    },
-    {
-        name = "iPad Pro",
-        w = 2732,
-        h = 2048,
-    },
-}
-
-panel_scale = {
-    {'100%', 1},
-    {'10%', 0.1},
-    {'20%', 0.2},
-    {'50%', 0.5},
-    {'80%', 0.8},
-    {'130%', 1.3},
-    {'200%', 2},
-    {'400%', 4},
-    {'600%', 6},
-    {'1000%', 10},
-    {'2000%', 20},
 }
 
 -- 显示历史打开模板的数量最大数
 max_recent_open_files = 20
 
-snap_shot_folder = 'template_snap_shot'
-
-snap_shot_image_size = {width = 480, height = 320}
-
--- 配置文件名后缀
-config_file_ext = '.json'
-
 -- 动态模板属性不可设置的属性名称
-dynamic_template_ignor_attrs = {
-    'type_name',
+dynamic_template_ignor_attrs = table.to_value_set({
     'name',
+    'lock',
     'assign_root',
-    'ccbFile',
-    -- 'template_info',
-    -- 'customize_info',
-}
+    'ani_data',
+    'child_list',
+    'template_info',
+    'customize_info',
+})
 
 ALIGN_TYPE = table.reverse_key_value({
     'TOP',
@@ -579,8 +495,14 @@ local camera_flag_info = {
     {'USER8', cc.CameraFlag.USER8},
 }
 
+local repeat_sprite_addres_info = {
+    {'GL_REPEAT', 0x2901},
+    {'GL_MIRRORED_REPEAT', 0x8370},
+}
+
 editor_template_code = [[
--- dialog code
+-- dialog code generated at %s
+
 Panel = g_panel_mgr.new_panel_class('__TEMPLATE__')
 
 -- override
@@ -602,8 +524,12 @@ control_size_can_not_change = table.to_value_set({
     'CCParticleSystemQuad',
     'CCHorzContainer',
     'CCVerContainer',
+    'CCAsyncHorzContainer',
+    'CCAsyncVerContainer',
 })
 
+
+-- 编辑属性可以覆盖基类的
 control_edit_info = {
     ['CCNode'] = {
         {
@@ -625,7 +551,7 @@ control_edit_info = {
             tp = 'edit_type_string',
             parm = {
                 name = '名称',
-                re_pattern = '|[_a-z]+[a-zA-Z_0-9]*',
+                re_pattern = '|[_a-zA-Z ]+[a-zA-Z_0-9]*',
             },
             refresPolicy = editcallback_refresh,
         },
@@ -718,10 +644,20 @@ control_edit_info = {
             parm = {
                 name = '触摸',
             },
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
+        },
+        {
+            attr = 'forceHandleTouch',
+            rely_on = 'touchEnabled',
+            tp = 'edit_type_bool',
+            parm = {
+                name = '强制触摸',
+            },
             refresPolicy = nil,
         },
         {
             attr = 'swallow',
+            rely_on = 'touchEnabled',
             tp = 'edit_type_bool',
             parm = {
                 name = '吞噬触摸',
@@ -730,25 +666,19 @@ control_edit_info = {
         },
         {
             attr = 'noEventAfterMove',
+            rely_on = 'touchEnabled',
             tp = 'edit_type_bool',
             parm = {
                 name = '移动取消触摸',
             },
-            refresPolicy = nil,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'move_dist',
+            rely_on = 'noEventAfterMove',
             tp = 'edit_type_scale_1',
             parm = {
                 name = '移动距离',
-            },
-            refresPolicy = nil,
-        },
-        {
-            attr = 'forceHandleTouch',
-            tp = 'edit_type_bool',
-            parm = {
-                name = '强制触摸',
             },
             refresPolicy = nil,
         },
@@ -820,6 +750,77 @@ control_edit_info = {
                 name = '向量',
                 target = {'x', 'y'},
                 precision = 3,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+    },
+    ['LayerRadialGradient'] = {
+        {
+            attr = 'startColor',
+            tp = 'edit_type_select_color',
+            parm = {
+                name = '起始颜色',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'endColor',
+            tp = 'edit_type_select_color',
+            parm = {
+                name = '结束颜色',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'startOpacity',
+            tp = 'edit_type_number',
+            parm = {
+                name = '起始透明度',
+                precision = 0,
+                min = 0,
+                max = 255,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'endOpacity',
+            tp = 'edit_type_number',
+            parm = {
+                name = '结束透明度',
+                precision = 0,
+                min = 0,
+                max = 255,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'radius',
+            tp = 'edit_type_number',
+            parm = {
+                name = '半径',
+                precision = 0,
+                min = 0,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'center',
+            tp = 'edit_type_number2',
+            parm = {
+                name = '中心',
+                target = {'x', 'y'},
+                precision = 3,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'expand',
+            tp = 'edit_type_number',
+            parm = {
+                name = 'expand',
+                precision = 3,
+                min = 0,
+                max = 1,
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -910,6 +911,57 @@ control_edit_info = {
                 target = {'src', 'dst'},
                 list1 = blend_info,
                 list2 = blend_info,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+    },
+    ['RepeatSprite'] = {
+        {
+            attr = 'img',
+            tp = 'edit_type_select_file',
+            parm = {
+                name = '图片',
+                file_ext = '*.png|*.jpg',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'color',
+            tp = 'edit_type_select_color',
+            parm = {
+                name = '颜色',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'opacity',
+            tp = 'edit_type_number',
+            parm = {
+                name = '透明度',
+                precision = 0,
+                min = 0,
+                max = 255,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'blendFun',
+            tp = 'edit_type_combo2',
+            parm = {
+                name1 = 'src混合',
+                name2 = 'dst混合',
+                target = {'src', 'dst'},
+                list1 = blend_info,
+                list2 = blend_info,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'addressMode',
+            tp = 'edit_type_combo',
+            parm = {
+                name = '纹理循环',
+                list = repeat_sprite_addres_info,
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -1049,10 +1101,11 @@ control_edit_info = {
             parm = {
                 name = '描边',
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'shadowColor',
+            rely_on = 'bEnableOutline',
             tp = 'edit_type_select_color',
             parm = {
                 name = '描边颜色',
@@ -1061,6 +1114,7 @@ control_edit_info = {
         },
         {
             attr = 'shadowWidth',
+            rely_on = 'bEnableOutline',
             tp = 'edit_type_number',
             parm = {
                 name = '描边宽度',
@@ -1075,10 +1129,11 @@ control_edit_info = {
             parm = {
                 name = '阴影',
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'shadowColor1',
+            rely_on = 'bEnableShadow',
             tp = 'edit_type_select_color',
             parm = {
                 name = '阴影颜色',
@@ -1087,6 +1142,7 @@ control_edit_info = {
         },
         {
             attr = 'shadowOffset',
+            rely_on = 'bEnableShadow',
             tp = 'edit_type_number2',
             parm = {
                 name = '阴影偏移值',
@@ -1103,10 +1159,11 @@ control_edit_info = {
             parm = {
                 name = '发光',
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'glowColor',
+            rely_on = 'bEnableGlow',
             tp = 'edit_type_select_color',
             parm = {
                 name = '发光颜色',
@@ -1266,10 +1323,11 @@ control_edit_info = {
             parm = {
                 name = '九宫格',
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'capInsets',
+            rely_on = '9sprite',
             tp = 'edit_type_select_capinsets',
             parm = {
                 name = '九宫格',
@@ -1323,10 +1381,11 @@ control_edit_info = {
             parm = {
                 name = '文本',
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'text',
+            rely_on = 'enableText',
             tp = 'edit_type_select_multilang',
             parm = {
                 name = '内容',
@@ -1335,6 +1394,7 @@ control_edit_info = {
         },
         {
             attr = 'fontSize',
+            rely_on = 'enableText',
             tp = 'edit_type_number',
             parm = {
                 name = '字体大小',
@@ -1345,6 +1405,7 @@ control_edit_info = {
         },
         {
             attr = 'textColor1',
+            rely_on = 'enableText',
             tp = 'edit_type_select_color',
             parm = {
                 name = '颜色1',
@@ -1353,6 +1414,7 @@ control_edit_info = {
         },
         {
             attr = 'textColor2',
+            rely_on = 'enableText',
             tp = 'edit_type_select_color',
             parm = {
                 name = '颜色2',
@@ -1361,6 +1423,7 @@ control_edit_info = {
         },
         {
             attr = 'textColor3',
+            rely_on = 'enableText',
             tp = 'edit_type_select_color',
             parm = {
                 name = '颜色3',
@@ -1369,6 +1432,7 @@ control_edit_info = {
         },
         {
             attr = 'textOffset',
+            rely_on = 'enableText',
             tp = 'edit_type_pos',
             parm = {
                 name = '文本位置',
@@ -1407,16 +1471,25 @@ control_edit_info = {
             parm = {
                 name = 'noEventAfterMove',
             },
-            refresPolicy = nil,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'move_dist',
+            rely_on = 'noEventAfterMove',
             tp = 'edit_type_scale_1',
             parm = {
                 name = '移动距离',
             },
             refresPolicy = nil,
         },
+        {
+            attr = 'tips',
+            tp = 'edit_type_string',
+            parm = {
+                name = '按钮提示',
+            },
+            refresPolicy = editcallback_refresh_load,
+        }
     },
     ['CCButton'] = {
     },
@@ -1494,7 +1567,7 @@ control_edit_info = {
                 file_type_name = '动画配置',
                 validate_file = editor_utils_is_valid_sprite_plist,
             },
-            refresPolicy = editcallback_refresh_load,
+            refresPolicy = editcallback_refresh_all_and_conf_and_reload_edit,
         },
         {
             attr = 'frameDelay',
@@ -1533,6 +1606,14 @@ control_edit_info = {
                 target = {'src', 'dst'},
                 list1 = blend_info,
                 list2 = blend_info,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'action',
+            tp = 'edit_type_animate_sprite_combo',
+            parm = {
+                name = '动作',
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -1761,8 +1842,32 @@ control_edit_info = {
             },
             refresPolicy = editcallback_refresh_load,
         },
+        {
+            attr = 'combobox_template',
+            tp = 'edit_type_select_template',
+            parm = {
+                name = 'template',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'combobox_popup_layer_template',
+            tp = 'edit_type_select_template',
+            parm = {
+                name = 'layer_temp',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
     },
     ['CCBFile'] = {
+        {
+            attr = 'size',
+            tp = 'edit_type_size',
+            parm = {
+                name = '大小',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
         {
             attr = 'ccbFile',
             tp = 'edit_type_select_template',
@@ -1878,6 +1983,7 @@ control_edit_info = {
                 name = 'initCount',
                 precision = 0,
                 min = 0,
+                max = 10000,
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -1899,6 +2005,14 @@ control_edit_info = {
             },
             refresPolicy = editcallback_refresh_load,
         },
+        {
+            attr = 'left2rightOrder',
+            tp = 'edit_type_bool',
+            parm = {
+                name = 'L2ROrder',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
     },
     ['_commonTemplateList'] = {
         {
@@ -1906,6 +2020,35 @@ control_edit_info = {
             tp = 'edit_type_bool',
             parm = {
                 name = 'bounces',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'notAutoHideLen',
+            tp = 'edit_type_number',
+            parm = {
+                name = 'notAutoHideLen',
+                precision = 0,
+                min = 0,
+            },
+        },
+    },
+    ['CCHorzAsyncList'] = {
+        {
+            attr = 'singleItemReverseLoadOrder',
+            tp = 'edit_type_bool',
+            parm = {
+                name = '反序加载',
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+    },
+    ['CCVerAsyncList'] = {
+        {
+            attr = 'singleItemReverseLoadOrder',
+            tp = 'edit_type_bool',
+            parm = {
+                name = '反序加载',
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -1948,28 +2091,6 @@ control_edit_info = {
             },
             refresPolicy = editcallback_refresh_load,
         },
-    },
-    ['CCPUParticleSystem3D'] = {
-        {
-            attr = 'pu_path',
-            tp = 'edit_type_select_file',
-            parm = {
-                name = '动画pu配置',
-                file_ext = '*.pu',
-                file_type_name = 'pu文件',
-            },
-            refresPolicy = editcallback_refresh_load,
-        },
-        {
-            attr = 'material_path',
-            tp = 'edit_type_select_file',
-            parm = {
-                name = '动画material配置',
-                file_ext = '*.material',
-                file_type_name = 'material文件',
-            },
-            refresPolicy = editcallback_refresh_load,
-        }
     },
     ['CCMotionMask'] = {
         {
@@ -2050,6 +2171,44 @@ control_edit_info = {
             refresPolicy = editcallback_refresh_load,
         },
     },
+    ['Node3D'] = {
+        {
+            attr = 'pos_z',
+            tp = 'edit_type_number',
+            parm = {
+                name = 'pos_z',
+                precision = 3,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'scale_z',
+            tp = 'edit_type_number',
+            parm = {
+                name = 'scale_z',
+                precision = 3,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'globalZorder',
+            tp = 'edit_type_number',
+            parm = {
+                name = 'globalZorder',
+                precision = 0,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+        {
+            attr = 'cameraMask',
+            tp = 'edit_type_combo',
+            parm = {
+                name = 'cameraMask',
+                list = camera_flag_info,
+            },
+            refresPolicy = editcallback_refresh_load,
+        },
+    },
     ['PerspectiveCamera'] = {
         {
             attr = 'fieldOfView',
@@ -2066,7 +2225,7 @@ control_edit_info = {
             attr = 'nearPlane',
             tp = 'edit_type_number',
             parm = {
-                name = 'fieldOfView',
+                name = 'nearPlane',
                 precision = 0,
             },
             refresPolicy = editcallback_refresh_load,
@@ -2075,7 +2234,7 @@ control_edit_info = {
             attr = 'farPlane',
             tp = 'edit_type_number',
             parm = {
-                name = 'fieldOfView',
+                name = 'farPlane',
                 precision = 0,
             },
             refresPolicy = editcallback_refresh_load,
@@ -2102,19 +2261,25 @@ control_edit_info = {
             },
             refresPolicy = editcallback_refresh_load,
         },
+    },
+    ['CCPUParticleSystem3D'] = {
         {
-            attr = 'forceDepthWrite',
-            tp = 'edit_type_bool',
+            attr = 'pu_path',
+            tp = 'edit_type_select_file',
             parm = {
-                name = 'forceDepthWrite',
+                name = '动画pu配置',
+                file_ext = '*.pu',
+                file_type_name = 'pu文件',
             },
             refresPolicy = editcallback_refresh_load,
         },
         {
-            attr = 'force2dQueue',
-            tp = 'edit_type_bool',
+            attr = 'material_path',
+            tp = 'edit_type_select_file',
             parm = {
-                name = 'force2dQueue',
+                name = '动画material配置',
+                file_ext = '*.material',
+                file_type_name = 'material文件',
             },
             refresPolicy = editcallback_refresh_load,
         },
@@ -2132,31 +2297,61 @@ ani_edit_types = {
     {
         name = '基本动画',
         list = {
+            {
+                name = '位置',
+                list = {
+                    {'MoveTo','直线移动到MoveTo'},
+                    {'MoveBy','直线移动一定距离MoveBy'},
+                    {'BezierTo','曲线移动到BezierTo'},
+                    {'BezierBy','曲线移动一定距离BezierBy'},
+                    {'CardinalSplineBy','曲线平滑移动距离CardinalSplineBy'},
+                    {'JumpTo','跳跃到一个位置JumpTo'},
+                    {'JumpBy','跳跃一定距离JumpBy'},
+                    {'Place','瞬间移动到Place'},
+                }
+            },
+            {
+                name = '旋转',
+                list = {
+                    {'RotateTo','旋转到一个角度RotateTo'},
+                    {'RotateBy','旋转一定角度RotateBy'},
+                }
+            },
+            {
+                name = '缩放',
+                list = {
+                    {'ScaleTo','缩放到ScaleTo'},
+                    {'ScaleBy','缩放一定大小ScaleBy'},
+                    {'SkewTo','反转到一个角度SkewTo'},
+                    {'SkewBy','反转一定角度SkewBy'},
+                }
+            },
+            {
+                name = '颜色',
+                list = {
+                    {'TintTo','渐变到一定颜色TintTo'},
+                    {'FadeTo','渐变到一定透明度FadeTo'},
+                    {'FadeIn','渐变到完全显示FadeIn'},
+                    {'FadeOut','渐变到完全消失FadeOut'},
+                }
+            },
+            {
+                name = '显示',
+                list = {
+                    {'Show','瞬间显示Show'},
+                    {'Hide','瞬间隐藏Hide'},
+                    {'ToggleVisibility','切换隐藏，显示ToggleVisibility'},
+                    {'Blink','闪烁Blink'},
+                }
+            },
             {'DelayTime','延时动作DelayTime'},
-            {'MoveTo','直线移动到MoveTo'},
-            {'MoveBy','直线移动一定距离MoveBy'},
-            {'BezierTo','曲线移动到BezierTo'},
-            {'BezierBy','曲线移动一定距离BezierBy'},
-            {'CardinalSplineTo','曲线平滑移动CardinalSplineTo'},
-            {'CardinalSplineBy','曲线平滑移动距离CardinalSplineBy'},
-            {'ScaleTo','缩放到ScaleTo'},
-            {'ScaleBy','缩放一定大小ScaleBy'},
-            {'RotateTo','旋转到一个角度RotateTo'},
-            {'RotateBy','旋转一定角度RotateBy'},
-            {'SkewTo','反转到一个角度SkewTo'},
-            {'SkewBy','反转一定角度SkewBy'},
-            {'JumpTo','跳跃到一个位置JumpTo'},
-            {'JumpBy','跳跃一定距离JumpBy'},
-            {'Blink','闪烁Blink'},
-            {'FadeTo','渐变到一定透明度FadeTo'},
-            {'FadeIn','渐变到完全显示FadeIn'},
-            {'FadeOut','渐变到完全消失FadeOut'},
-            {'Show','瞬间显示Show'},
-            {'Hide','瞬间隐藏Hide'},
-            {'ToggleVisibility','切换隐藏，显示ToggleVisibility'},
+            {'TemplateAction', '模板动画'},
+            {'PlayAudio', '音效播放'},
+            {'PlayMusic', '音乐播放'},
             {'RemoveSelf','移除自己RemoveSelf'},
-            {'Place','瞬间移动到Place'},
             {'CallFunc','回调函数CallFunc'},
+            {'PlaySkeletonAnimation','Spine骨骼动画'},
+            {'PlayParticleAnimation','粒子动画'},
         },
     },
     {
@@ -2199,20 +2394,79 @@ ani_edit_types = {
             {'EaseBounceOut',},
             {'EaseBounceInOut',},
         },
-    },
+    }
 }
 
--- ani_type_name_info = {}
--- for _, info in ipairs(ani_edit_types) do
---     local sub_group = {}
---     for _, info in ipairs(info.list) do
---         local typeName = info[1]
---         table.insert(sub_group, {typeName, typeName})
---     end
---     table.insert(ani_type_name_info, {sub_group=sub_group, sub_group_name=info.name})
--- end
+local function _vertify_ani_edit_types(infoList)
+    if infoList['name'] then
+        _vertify_ani_edit_types(infoList.list)
+    else
+        for _, typeInfo in ipairs(infoList) do
+            if typeInfo['name'] then
+                _vertify_ani_edit_types(typeInfo.list)
+            else
+                return assert(is_table(typeInfo))
+            end
+        end
+    end
+end
 
--- print(ani_type_name_info)
+_vertify_ani_edit_types(ani_edit_types)
+
+-- 动画类型转换信息
+ani_edit_types_convert_info = {}
+
+local function _replaceAniTypeName(info)
+    local new_t = {}
+    for k, v in pairs(info) do
+        local t = nil
+        local key = k
+        if is_table(v) then
+            t = _replaceAniTypeName(v)
+        else
+            t = v
+        end
+        if k == 'name' then
+            key = 'sub_group_name'
+        end
+        if k == 'list' then
+            key = 'sub_group'
+        end
+        new_t[key] = t
+    end
+    return new_t
+end
+
+local function _solveAniTypeNameInfo(info)
+    if info.sub_group_name then
+        _solveAniTypeNameInfo(info.sub_group)
+        return
+    end
+    for k, typeInfo in pairs(info) do
+        if typeInfo.sub_group_name then
+            _solveAniTypeNameInfo(typeInfo.sub_group)
+            for key, v in pairs(typeInfo) do
+                if key ~= 'sub_group_name' and key ~= 'sub_group' then
+                    if v.sub_group_name then
+                        _solveAniTypeNameInfo(v)
+                    else
+                        typeInfo[key] = {v[1], v[1]}
+                    end
+                end
+            end
+        else
+            info[k] = {typeInfo[1], typeInfo[1]}
+        end
+    end
+end
+
+for _, typeInfo in pairs(ani_edit_types) do
+    if not ani_edit_types_convert_info[typeInfo.name] then
+        local info = _replaceAniTypeName(table.deepcopy(typeInfo.list))
+        _solveAniTypeNameInfo(info)
+        ani_edit_types_convert_info[typeInfo.name] = info
+    end
+end
 
 spect_ani_edit_types = {
     name = '特殊节点动画',
@@ -2230,6 +2484,22 @@ spect_ani_edit_types = {
             },
         },
     },
+}
+
+common_ani_edit_info = {
+    def = {
+        name = '',
+    },
+    edit_attrs = {
+        {
+            attr = 'name',
+            tp = 'edit_type_string',
+            parm = {
+                name = '名称',
+                re_pattern = '|[_a-z]+[a-zA-Z_0-9]*',
+            },
+        }
+    }
 }
 
 ani_edit_info = {
@@ -2378,43 +2648,6 @@ ani_edit_info = {
                 },
             },
         },
-    },
-    ['CardinalSplineTo'] = {
-        def = {
-            t = 0,
-            tension = 0.1,
-            p_list = {
-                ccp(0, 0),
-                ccp(0, 0)
-            }
-        },
-        edit_attrs = {
-            {
-                attr = 't',
-                tp = 'edit_type_number',
-                parm = {
-                    name = '时间',
-                    precision = 3,
-                    min = 0,
-                },
-            },
-            {
-                attr = 'tension',
-                tp = 'edit_type_number',
-                parm = {
-                    name = '张力',
-                    precision = 3,
-                    min = 0,
-                },
-            },
-            {
-                attr = 'p_list',
-                tp = 'edit_type_list_pos',
-                parm = {
-                    name = '位置列表'
-                }
-            }
-        }
     },
     ['CardinalSplineBy'] = {
         def = {
@@ -2716,6 +2949,30 @@ ani_edit_info = {
             },
         },
     },
+    ['TintTo'] = {
+        def = {
+            t = 0,
+            color = 0xffffff,
+        },
+        edit_attrs = {
+            {
+                attr = 't',
+                tp = 'edit_type_number',
+                parm = {
+                    name = '时间',
+                    precision = 3,
+                    min = 0,
+                },
+            },
+            {
+                attr = 'color',
+                tp = 'edit_type_select_color',
+                parm = {
+                    name = '颜色',
+                },
+            },
+        },
+    },
     ['FadeTo'] = {
         def = {
             t = 0,
@@ -2804,7 +3061,7 @@ ani_edit_info = {
                 tp = 'edit_type_string',
                 parm = {
                     name = '名称',
-                    re_pattern = '[_a-z]+[a-zA-Z_0-9]*',
+                    re_pattern = '[_a-z]*[a-zA-Z_0-9]*',
                 },
             },
             {
@@ -2812,7 +3069,7 @@ ani_edit_info = {
                 tp = 'edit_type_string',
                 parm = {
                     name = '参数',
-                    re_pattern = '[_a-z]+[a-zA-Z_0-9]*',
+                    re_pattern = '[_a-z]*[a-zA-Z_0-9]*',
                 },
             },
         },
@@ -2872,7 +3129,60 @@ ani_edit_info = {
             },
         },
     },
-
+    ['PlayParticleAnimation'] = {
+        def = {
+            particleFile = '',
+            posType = cc.POSITION_TYPE_FREE,
+        },
+        edit_attrs = {
+            {
+                attr = 'particleFile',
+                tp = 'edit_type_select_file',
+                parm = {
+                    name = '粒子配置',
+                    file_ext = '*.plist',
+                    file_type_name = '粒子配置',
+                    validate_file = editor_utils_is_valid_particle_plist,
+                },
+            },
+            {
+                attr = 'posType',
+                tp = 'edit_type_combo',
+                parm = {
+                    name = 'posType',
+                    list = particle_pos_type_info,
+                },
+            },
+        },
+    },
+    ['PlaySkeletonAnimation'] = {
+        def = {
+            animation_data = {
+                jsonPath = '',
+                action = '',
+            },
+            isLoop = true,
+        },
+        edit_attrs = {
+            {
+                attr = 'animation_data',
+                tp = 'edit_type_select_spine_file',
+                parm = {
+                    name = '动画配置',
+                    file_ext = '*.json',
+                    file_type_name = 'spine动画',
+                    validate_file = editor_utils_is_valid_spine_json,
+                },
+            },
+            {
+                attr = 'isLoop',
+                tp = 'edit_type_bool',
+                parm = {
+                    name = '是否循环',
+                },
+            },
+        },
+    },
 
     ['Repeat'] = {
         def = {
@@ -2983,7 +3293,110 @@ ani_edit_info = {
     ['EaseBounceOut'] = {},
     ['EaseBounceInOut'] = {},
     ['RepeatForever'] = {},
+
+    ['PlayAudio'] = {
+        def = {
+            p = '',
+        },
+        edit_attrs = {
+            {
+                attr = 'p',
+                tp = 'edit_type_select_file',
+                parm = {
+                    name = '音效路径',
+                    file_ext = '*.mp3',
+                    file_type_name = '音效',
+                    validate_file = editor_utils_is_valid_mp3_file,
+                },
+            }
+        },
+    },
+    ['PlayMusic'] = {
+        def = {
+            p = '',
+        },
+        edit_attrs = {
+            {
+                attr = 'p',
+                tp = 'edit_type_select_file',
+                parm = {
+                    name = '音乐路径',
+                    file_ext = '*.mp3',
+                    file_type_name = '音乐',
+                    validate_file = editor_utils_is_valid_mp3_file,
+                },
+            }
+        },
+    },
+    ['TemplateAction'] = {
+        def = {
+            p = '',
+            n = '',
+        },
+        edit_attrs = {
+            {
+                attr = 'p',
+                tp = 'edit_type_select_template',
+                parm = {
+                    name = 'template路径',
+                    is_reload = true
+                },
+            },
+            {
+                attr = 'n',
+                tp = 'edit_type_combo',
+                parm = {
+                    name = '动画名',
+                    list = function(self)
+                        local templatePath = self._editConf['p']
+                        local animationName = self._editConf['n']
+                        local l = {{'未选择', ''}, }
+
+                        if not g_uisystem.is_template_valid(templatePath) then
+                            self:UpdateData('')
+                            return l
+                        end
+
+                        local bExist = false
+                        -- to opt
+                        for animationName, v in pairs(g_uisystem.load_template_create(templatePath)._aniConf) do
+                            table.insert(l, {animationName, animationName})
+                            if self._data == animationName then
+                                bExist = true
+                            end
+                        end
+                        if self._data ~= '' and not bExist then
+                            self:UpdateData('')
+                        end
+                        return l
+                    end,
+                },
+            },
+        },
+        
+    }
 }
+
+-- verify
+for _, info in ipairs(spect_ani_edit_types.list) do
+    for _, v in ipairs(info.list) do
+        assert(is_table(ani_edit_info[v[1]]))
+    end
+end
+
+-- merge common edit info
+for animation_name, animation_conf in pairs(ani_edit_info) do
+    if not animation_conf.def then
+        animation_conf.def = {}
+    end
+    table.merge(animation_conf.def, common_ani_edit_info.def)
+
+    if not animation_conf.edit_attrs then
+        animation_conf.edit_attrs = {}
+    end
+    table.arr_insert(animation_conf.edit_attrs, 1, common_ani_edit_info.edit_attrs)
+end
+
 
 common_ani_has_children = table.to_value_set({
     'Spawn',
@@ -2991,9 +3404,6 @@ common_ani_has_children = table.to_value_set({
 })
 
 show_demon_anctions = {
-    'EaseIn', 
-    'EaseOut', 
-    'EaseInOut', 
     'EaseSineIn', 
     'EaseSineOut', 
     'EaseSineInOut', 
@@ -3033,10 +3443,6 @@ need_custome_edit_actions = {
     },
     ['BezierBy'] = {
         file = 'uieditor.edit_action.dlg_edit_bezier_action_panel',
-        edit_name = '编辑曲线'
-    },
-    ['CardinalSplineTo'] = {
-        file = 'uieditor.edit_action.dlg_edit_cardinalspline_action_panel',
         edit_name = '编辑曲线'
     },
     ['CardinalSplineBy'] = {
@@ -3146,6 +3552,7 @@ local function handle_change_param(mocPath)
     return jsonPath
 end
 
+-- 拖拽配置文件到编辑器视图生成的节点类型规则约束
 file_suffix_to_node = {
     ['png'] = {
         type_name = 'CCSprite',
@@ -3208,12 +3615,6 @@ file_suffix_to_node = {
                 }
             }
         },
-        ['ui_template'] = {
-            drag_policy = 'drag_open_ui_template'
-        },
-        ['anim_template'] = {
-            drag_policy = 'drag_open_anim_tempelate'
-        },
         check_sub_type_policy = check_json_file_res
     },
     ['moc'] = {
@@ -3227,39 +3628,3 @@ file_suffix_to_node = {
         check_sub_type_policy = check_live_2d_file_moc_res
     }
 }
-
-for _, info in ipairs(ani_edit_types) do
-    for _, v in ipairs(info.list) do
-        assert(is_table(ani_edit_info[v[1]]))
-    end
-end
-
-for _, info in ipairs(spect_ani_edit_types.list) do
-    for _, v in ipairs(info.list) do
-        assert(is_table(ani_edit_info[v[1]]))
-    end
-end
-
-
-local default_animation_name_att = {
-    attr = 'name',
-    tp = 'edit_type_string',
-    parm = {
-        name = '名称',
-        re_pattern = '|[_a-z]+[a-zA-Z_0-9]*',
-    },
-}
-
-for animation_name, animation_conf in pairs(ani_edit_info) do
-
-    if not animation_conf.def then
-        animation_conf.def = {}
-    end
-    animation_conf.def.name = ''
-
-    if not animation_conf.edit_attrs then
-        animation_conf.edit_attrs = {}
-    end
-    table.insert(animation_conf.edit_attrs, default_animation_name_att)
-
-end

@@ -21,6 +21,15 @@ local function _check_panel_exists_onclick(node, callback)
     end
 end
 
+local function _curPanel(fun)
+    local panel = g_multi_doc_manager.get_cur_open_panel()
+    if panel then
+        fun(panel)
+    else
+        message('当前没有打开任何配置文件，无法操作')
+    end
+end
+
 -- overwrite
 function Panel:init_panel()
     self:_initUIEditorBase()
@@ -35,17 +44,10 @@ function Panel:_updatePanelStatus()
     local panelCount = #openPanelList
     local curPanelIndex, curPanel = g_multi_doc_manager.get_cur_open_panel_index()
 
-    --all panels visibility
+    -- all panels visibility
     for _, panel in ipairs(openPanelList) do
         panel:ShowConfigView(panel == curPanel)
     end
-
-    -- check tab buttons need to update
-    -- if self.tabTitleHorzList:GetItemCount() == panelCount and
-    --         self.tabTitleHorzList:GetItem(curPanelIndex) and
-    --         self.tabTitleHorzList:GetItem(curPanelIndex):GetCheck() then
-    --     return
-    -- end
 
     -- refresh tab buttons
     local tabBtns = {}
@@ -105,7 +107,19 @@ function Panel:_initUIEditorBase()
         end
     end
 
+    -- 拖拽打开文件
+    self._layer:HandleMouseEvent()
+    self._layer.OnDropFile = function(filePaths)
+        local project_res_path = g_logic_editor:get_project_ui_template_path()
+        local pattern = string.format('^%s(.+)%%.json$', project_res_path)
 
+        for _, filePath in ipairs(filePaths) do
+            local templateName = string.match(filePath, pattern)
+            if templateName then
+                g_multi_doc_manager.open_file(templateName)
+            end
+        end
+    end
 
     -- 对齐
     local ALIGN_TYPE = constant_uieditor.ALIGN_TYPE
@@ -125,26 +139,23 @@ function Panel:_initUIEditorBase()
     _check_panel_exists_onclick(self.btnSameHeight, function(curPanel) curPanel:AlignSelect(ALIGN_TYPE.SAME_HEIGHT) end)
     _check_panel_exists_onclick(self.btnSameSize, function(curPanel) curPanel:AlignSelect(ALIGN_TYPE.SAME_SIZE) end)
 
-    _check_panel_exists_onclick(self.btnSetNodeTop, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.TOP) end)
-    _check_panel_exists_onclick(self.btnSetNodeBottom, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.BOTTOM) end)
-    _check_panel_exists_onclick(self.btnSetNodeLeft, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.LEFT) end)
-    _check_panel_exists_onclick(self.btnSetNodeRight, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.RIGHT) end)
-    _check_panel_exists_onclick(self.btnSetNodeVertCenter, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.VCENTER) end)
-    _check_panel_exists_onclick(self.btnSetNodeHorzCenter, function(curPanel) curPanel:SetNodePos(ALIGN_TYPE.HCENTER) end)
-
+    -- 打开模板文件
     _check_panel_exists_onclick(self.btnOpenFolder, function(curPanel) curPanel:OpenContainFolder() end)
     -- _check_panel_exists_onclick(self.btnAddToTemplate, function(curPanel) curPanel:AddToTemplateList() end)
 
-    local function _curPanel(fun)
-        local panel = g_multi_doc_manager.get_cur_open_panel()
-        if panel then
-            fun(panel)
-        else
-            message('当前没有打开任何配置文件，无法操作')
-        end
-    end
+    -- 预览
+    _check_panel_exists_onclick(self.btnPreview, function(panel) panel:OPPreviewPanel() end)
 
-    ----------------------------file
+    -- 显示全屏边框
+    _check_panel_exists_onclick(self.btnShowBorder, function(panel) panel:OPShowBoarder() end)
+
+    -- 视图居中
+    _check_panel_exists_onclick(self.btnCenterview, function(panel) panel:OPShowCenterView() end)
+
+    -- 生成代码
+    _check_panel_exists_onclick(self.btnGenCode, function(panel) panel:OPGenDlgCode() end)
+
+
     --新建
     local function OnNewFile()
         g_multi_doc_manager.new_file()
@@ -327,6 +338,15 @@ function Panel:_initUIEditorBase()
     self:add_key_event_callback('KEY_ESCAPE', OnEsc)
     self.comboEdit:AddMenuItem('取消选中(Esc)', OnDelete)
 
+    -- ctrl + a 全选节点
+    local function OnSelectAll()
+        _curPanel(function(panel)
+            panel:OPSelectAllItems()
+        end)
+    end
+    self:add_key_event_callback({'KEY_CTRL', 'KEY_A'}, OnSelectAll)
+    self.comboEdit:AddMenuItem('全选(ctrl + a)', OnSelectAll)
+
     local pos_quick_setting = constant_uieditor.pos_quick_setting
     local popUpItem = self.comboEdit:AddPopupMenuItem(pos_quick_setting.text_name)
     for _, pos_type_config in ipairs(pos_quick_setting.list) do
@@ -416,20 +436,6 @@ function Panel:_initUIEditorBase()
         end)
     end
 
-    -- self:add_key_event_callback({'KEY_CTRL', 'KEY_1'}, function()
-    --     local checkVisible = self.layerRight.checkVisible
-    --     checkVisible:SetCheck(not checkVisible:GetCheck(), true)
-    -- end)
-
-    -- 节点折叠
-    for i = 0, 9 do
-        self:add_key_event_callback({'KEY_CTRL', 'KEY_K', string.format('KEY_%d', i)}, function()
-            _curPanel(function(panel)
-                panel:OPWrapNode(i)
-            end)
-        end)
-    end
-
     self:add_key_event_callback({'KEY_CTRL', 'KEY_0'}, function()
         _curPanel(function(panel)
             panel:OPSetPanelScale(1)
@@ -448,8 +454,10 @@ function Panel:_initUIEditorBase()
         end)
     end)
 
-    self.comboOther:AddMenuItem('设置', function()
-        g_panel_mgr.show('editor.dlg_setting_panel')
+    self.comboOther:AddMenuItem('预览', function()
+        _curPanel(function(panel)
+            panel:OPPreviewPanel()
+        end)
     end)
 
     self.comboOther:AddMenuItem('视图边框', function()
@@ -470,13 +478,25 @@ function Panel:_initUIEditorBase()
         end)
     end)
 
-    self.comboAniOP:AddMenuItem('删除当前动画', function()
-        _curPanel(function(panel)
-            panel:OPDelCurAni()
-        end)
+    -- dialog list
+    local dialogListPanel = g_panel_mgr.show_with_parent('dlg_uieditor_main_dialog_list_panel', self._layer)
+    local function _switchFileDialog()
+        local bOpen = not dialogListPanel._layer:isVisible()
+        dialogListPanel._layer:setVisible(bOpen)
+    end
+    self.comboOther:AddMenuItem('游戏面板视图(Tab)', _switchFileDialog)
+    self:add_key_event_callback({'KEY_TAB'}, _switchFileDialog)
+
+
+    self.comboHelp:AddMenuItem('编辑器使用操作文档', function()
+        g_application:openURL(g_script_conf['editor_help_info']['op_doc_url'])
     end)
 
-    --创建控件列表初始化
+    self.comboHelp:AddMenuItem('安装环境', function()
+        g_application:openURL(g_script_conf['editor_help_info']['evn_doc_url'])
+    end)
+
+    -- 创建控件列表初始化
     for _, groupInfo in ipairs(constant_uieditor.controls) do
         local popUpItem = self.comboAddControl:AddPopupMenuItem(groupInfo.text_name)
         for _, class in ipairs(groupInfo.list) do

@@ -25,6 +25,15 @@
 			"frame1":"editor_res/icon_right.png"
 		},
 		{
+			"type_name":"CCLayer",
+			"name":"_touchLayer_",
+			"anchor":{
+				"x":0,
+				"y":0
+			},
+			"touchEnabled":true
+		},
+		{
 			"type_name":"CCScale9Sprite",
 			"name":"_touchBg_",
 			"anchor":{
@@ -33,17 +42,8 @@
 			},
 			"hide":true,
 			"spriteFrame":{
-				"path":"gui/default/bg_common_C.png"
+				"path":"gui/default/default_img.png"
 			}
-		},
-		{
-			"type_name":"CCLayer",
-			"name":"_dragDropBtn_",
-			"anchor":{
-				"x":0,
-				"y":0
-			},
-			"touchEnabled":true
 		},
 		{
 			"type_name":"CCLayerColor",

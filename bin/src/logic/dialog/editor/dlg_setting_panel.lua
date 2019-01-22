@@ -15,9 +15,23 @@ function Panel:init_panel()
 
     self.btnChooseProjectPath.OnClick = function()
         local path = win_open_directory('选择项目资源目录', '', true)
-        if path ~= '' then
+        if is_valid_str(path) then
             self.editProjectResPath:SetText(path)
         end
+    end
+
+    self.comboRecentSelResPath.OnBeforPopup = function()
+        self.comboRecentSelResPath:SetItems({})
+        local validResPaths = {}
+        for _, resPath in ipairs(g_native_conf['editor_recent_open_proj_res_path']) do
+            if g_fileUtils:isDirectoryExist(resPath) then
+                table.insert(validResPaths, resPath)
+                self.comboRecentSelResPath:AddMenuItem(resPath, function()
+                    self.editProjectResPath:SetText(resPath)
+                end)
+            end
+        end
+        g_native_conf['editor_recent_open_proj_res_path'] = validResPaths
     end
 
     self.btnOK.OnClick = function()
@@ -28,6 +42,27 @@ function Panel:init_panel()
         self.comboLang:AddMenuItem(lang, function()
             self.comboLang:SetString(lang)
         end)
+    end
+
+    -- 新建项目
+    self.btnNewProject.OnClick = function()
+        local projectTemplatePath = g_logic_editor.get_project_template_path()
+        if projectTemplatePath then
+            local p = win_save_file('项目目录', g_fileUtils:getWritablePath(), true)
+            if is_valid_str(p) then
+                p = p .. '/'
+                if g_fileUtils:isDirectoryExist(p) then
+                    message('请选择一个不存在的目录')
+                else
+                    if g_fileUtils:SyncDir(projectTemplatePath, p) then
+                        self.editProjectResPath:SetString(p..'res')
+                        win_explorer(p)
+                    end
+                end
+            end
+        else
+            message('项目模板目录找不到')
+        end
     end
 
     self:_updateData()
@@ -45,7 +80,13 @@ function Panel:OnOK()
     -- project path
     local projectResPath = self.editProjectResPath:GetString()
 
-    if not g_logic_editor.set_project_path(projectResPath) then
+    if g_logic_editor.set_project_path(projectResPath) then
+        -- save to recent open res path
+        local editor_recent_open_proj_res_path = g_native_conf['editor_recent_open_proj_res_path']
+        table.arr_remove_v(editor_recent_open_proj_res_path, projectResPath)
+        table.insert(editor_recent_open_proj_res_path, projectResPath)
+        g_native_conf['editor_recent_open_proj_res_path'] = editor_recent_open_proj_res_path
+    else
         message('project path not valid')
         return
     end

@@ -35,12 +35,12 @@
 			},
 			"hide":true,
 			"spriteFrame":{
-				"path":"gui/default/bg_common_C.png"
+				"path":"gui/default/default_img.png"
 			}
 		},
 		{
 			"type_name":"CCLayer",
-			"name":"_dragDropBtn_",
+			"name":"_touchLayer_",
 			"anchor":{
 				"x":0,
 				"y":0

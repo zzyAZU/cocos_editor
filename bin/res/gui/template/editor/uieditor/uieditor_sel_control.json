@@ -18,8 +18,8 @@
 				"y":"i0"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":0,
@@ -46,8 +46,8 @@
 				"y":0
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":0,
@@ -70,8 +70,8 @@
 			"type_name":"CCLayer",
 			"name":"LB",
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":1,
@@ -98,8 +98,8 @@
 				"y":"i0"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":1,
@@ -126,8 +126,8 @@
 				"y":"i0"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":0.5,
@@ -154,8 +154,8 @@
 				"y":"50%"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":0,
@@ -182,8 +182,8 @@
 				"y":0
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":0.5,
@@ -210,8 +210,8 @@
 				"y":"50%"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"anchor":{
 				"x":1,
@@ -249,8 +249,8 @@
 						"y":"50%"
 					},
 					"size":{
-						"height":5,
-						"width":5
+						"height":6,
+						"width":6
 					},
 					"line_weight":1,
 					"line_color":595191
@@ -265,8 +265,8 @@
 				"y":"50%"
 			},
 			"size":{
-				"height":5,
-				"width":5
+				"height":6,
+				"width":6
 			},
 			"touchEnabled":true,
 			"child_list":[

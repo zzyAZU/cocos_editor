@@ -30,14 +30,8 @@ local function _getTemplateNameByFullPath(fullFilePath)
         return
     end
 
-    local p = g_logic_editor.get_project_ani_template_path()
-    local pattern = p..'.+%'..constant_uieditor.config_file_ext..'$'
-
-    if not string.find(fullFilePath, pattern) then
-        return
-    end
-
-    return fullFilePath:sub(#p + 1, -#constant_uieditor.config_file_ext - 1)
+    local pattern = g_logic_editor.get_project_ani_template_path()..'(.+)%.json$'
+    return string.match(fullFilePath, pattern)
 end
 
 -- 获取最近打开的模板配置
@@ -46,8 +40,7 @@ function get_recent_open_file_list()
 
     -- update recent files validation
     for _, templateName in ipairs(g_native_conf['anieditor_recent_open_files']) do
-        local tempLateFilePath = g_logic_editor.get_project_ani_template_path()..templateName..constant_uieditor.config_file_ext
-        if g_fileUtils:isFileExist(tempLateFilePath) then
+        if g_uisystem.is_ani_template_valid(templateName) then
             table.insert(ret, templateName)
         end
     end
@@ -83,7 +76,7 @@ function open_file(templateName)
             table.insert(ret, panel)
         end
     else
-        local fileList = win_open_multiple('ani_template', g_logic_editor.get_project_ani_template_path(), '*'..constant_uieditor.config_file_ext, true)
+        local fileList = win_open_multiple('ani_template', g_logic_editor.get_project_ani_template_path(), '*.json', true)
         for _, fullPath in ipairs(fileList) do
             local panel = open_file_by_template_name(_getTemplateNameByFullPath(fullPath))
             if panel then
@@ -357,8 +350,7 @@ function save_template_conf(panel)
         _ws(',\n')
     end
     table.remove(ws)
-    _ws('\n')
-    _ws(']')
+    _ws('\n]')
 
     g_fileUtils:writeStringToFile(table.concat(ws), saveFullPath)
 

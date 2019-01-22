@@ -99,7 +99,6 @@ function UIControlItem:_initUI(pos)
     end
 
     btn.on_fold_btn_update = function()
-        print('on_fold_btn_update')
         btn.chLock:setVisible(self._listObjects:GetItemChildCount(btn) > 0)
     end
 
@@ -344,22 +343,8 @@ function UIControlItem:RefreshItemControl(bReorderPosAndSize, bReloadControl)
     end
 
     if bReorderPosAndSize then
-        local function _reorderSizeAndPosition(item)
-            local ctrl = item:GetCtrl()
-
-            if ctrl._x then
-                ctrl:SetPosition(ctrl._x, ctrl._y)
-            end
-
-            if ctrl._w then
-                ctrl:SetContentSize(ctrl._w, ctrl._h)
-            end
-
-            for _, item in ipairs(item._childList) do
-                _reorderSizeAndPosition(item)
-            end
-        end
-        _reorderSizeAndPosition(self)
+        local size = self._cfg['size']
+        self._control:SetContentSizeAndReposChild(size.width, size.height)
     end
 
     --刷新显示控件并刷新对应的selUI以及btnInListView
@@ -445,16 +430,15 @@ end
 --[[判断pos坐标点中了哪个最上层的item]]
 function UIControlItem:ItemForTouch(pos)
     -- 锁了的节点无法点中
-    if self._cfg['lock'] then
-        return
-    end
-
-    for _, v in ipairs(table.arr_reverse(self._childList)) do
-        local item = v:ItemForTouch(pos)
-        if item then
-            return item
+    if not self._cfg['lock'] then
+        for _, v in ipairs(table.arr_reverse(self._childList)) do
+            local item = v:ItemForTouch(pos)
+            if item then
+                return item
+            end
         end
     end
+
     if self:IsTouched(pos) then
         return self
     end
@@ -759,10 +743,48 @@ end
 function UIControlItem:_updateSelFrameTransform()
     local p = self._control
     local transform = {}
+    local scalex = 1
+    local scaley = 1
     while p ~= self._panel.layerDevice do
+        scalex = scalex * p:getScaleX()
+        scaley = scaley * p:getScaleY()
         table.insert(transform, 1, p:getNodeToParentTransform())
         p = p:getParent()
     end
+    scalex = math.abs(scalex) * self._panel.layerDevice:getScaleX()
+    scaley = math.abs(scaley) * self._panel.layerDevice:getScaleY()
+
+    if scalex < 1 and scalex > 0 then
+        self._selFrame.border.c:setScaleX(1 / scalex)
+        self._selFrame.anchor:setScaleX(1 / scalex)
+    else
+        self._selFrame.border.c:setScaleX(1)
+        self._selFrame.anchor:setScaleX(1)
+    end
+
+    if scaley < 1 and scaley > 0 then
+        self._selFrame.border.c:setScaleY(1 / scaley)
+        self._selFrame.anchor:setScaleY(1 / scaley)
+    else
+        self._selFrame.border.c:setScaleY(1)
+        self._selFrame.anchor:setScaleY(1)
+    end
+
+    for _, name in ipairs({'RT', 'RB', 'LB', 'LT', 'T', 'B', 'L', 'R'}) do
+        local node = self._selFrame[name]
+        if scalex < 1 and scalex > 0 then
+            node:setScaleX(1 / scalex)
+        else
+            node:setScaleX(1)
+        end
+
+        if scaley < 1 and scaley > 0 then
+            node:setScaleY(1 / scaley)
+        else
+            node:setScaleY(1)
+        end
+    end
+
     self._selFrame:setNodeToParentTransform(table.arr_reduce(transform, mat4_multiply))
 end
 
@@ -860,10 +882,9 @@ function UIControlItem:_updateListViewItem()
     
     -- bg size
     local w, h = btnInListView.text:getContentSize().width + 45, 30
-    btnInListView:SetContentSize(w, h)
-    btnInListView['_selFrame_']:SetContentSize(w, h)
-    btnInListView['_touchBg_']:SetContentSize(w, h)
-    btnInListView.chLock:SetPosition('i3', '50%')
+    btnInListView:SetContentSizeAndReposChild(w, h, function(node)
+        return not node['is_tree_view_item']
+    end)
 end
 
 

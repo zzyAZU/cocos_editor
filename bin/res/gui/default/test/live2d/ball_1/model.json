@@ -1,0 +1,19 @@
+{
+	"type": "Live2D Model Setting",
+	"name": "model",
+	"model": "model.moc",
+	"textures": [
+		"model2048/texture_00.png"
+	],
+	"motions":{
+		"breathe":[
+			{"file":"motions/breathe.mtn"}
+		],
+		"fear":[
+			{"file":"motions/fear.mtn"}
+		],
+		"happy":[
+			{"file":"motions/happy.mtn"}
+		]
+	}
+}

@@ -27,41 +27,43 @@
 			"type_name":"CCButton",
 			"name":"btnClose",
 			"pos":{
-				"x":"i0",
-				"y":"i0"
+				"x":"i27",
+				"y":"i16"
 			},
 			"size":{
-				"height":50,
-				"width":100
+				"height":31,
+				"width":53
 			},
-			"anchor":{
-				"x":1,
-				"y":1
-			},
-			"text":"关闭"
+			"text":"关闭",
+			"fontSize":16
 		},
 		{
 			"type_name":"CCLayerColor",
 			"pos":{
 				"x":14,
-				"y":"i54"
+				"y":"i39"
 			},
 			"size":{
 				"height":30,
-				"width":462
+				"width":"i360"
 			},
 			"anchor":{
 				"x":0,
-				"y":0.5
+				"y":1
 			},
 			"color":7157704,
 			"child_list":[
 				{
 					"type_name":"RichLabel",
 					"pos":{
-						"x":95,
+						"x":5,
 						"y":"50%"
 					},
+					"anchor":{
+						"x":0,
+						"y":0.5
+					},
+					"font_size":16,
 					"text":"项目资源目录"
 				},
 				{
@@ -73,13 +75,13 @@
 					},
 					"size":{
 						"height":"100%",
-						"width":"i200"
+						"width":"i111"
 					},
 					"anchor":{
 						"x":1,
 						"y":0.5
 					},
-					"text":"N:/NeoX/city_war/res",
+					"fontSize":18,
 					"child_list":[
 						{
 							"type_name":"CCLayerColor",
@@ -104,7 +106,39 @@
 						"width":44
 					},
 					"text":"选择",
-					"fontSize":18
+					"fontSize":16
+				},
+				{
+					"type_name":"CCCombobox",
+					"name":"comboRecentSelResPath",
+					"pos":{
+						"x":"i-55",
+						"y":15
+					},
+					"size":{
+						"height":31,
+						"width":98
+					},
+					"anchor":{
+						"x":0,
+						"y":0.5
+					},
+					"popup_item_width":666,
+					"text":"历史记录"
+				},
+				{
+					"type_name":"CCButton",
+					"name":"btnNewProject",
+					"pos":{
+						"x":"i-196",
+						"y":15
+					},
+					"size":{
+						"height":31,
+						"width":78
+					},
+					"text":"新建项目",
+					"fontSize":16
 				}
 			]
 		},
@@ -112,24 +146,25 @@
 			"type_name":"CCLayerColor",
 			"pos":{
 				"x":14,
-				"y":"i88"
+				"y":"i73"
 			},
 			"size":{
 				"height":30,
-				"width":369
+				"width":199
 			},
 			"anchor":{
 				"x":0,
-				"y":0.5
+				"y":1
 			},
 			"color":7157704,
 			"child_list":[
 				{
 					"type_name":"RichLabel",
 					"pos":{
-						"x":97,
+						"x":21,
 						"y":"50%"
 					},
+					"font_size":16,
 					"text":"语言"
 				},
 				{
@@ -140,8 +175,8 @@
 						"y":"50%"
 					},
 					"size":{
-						"height":"100%",
-						"width":"i200"
+						"height":30,
+						"width":"i111"
 					},
 					"anchor":{
 						"x":1,
@@ -155,24 +190,25 @@
 			"type_name":"CCLayerColor",
 			"pos":{
 				"x":14,
-				"y":"i123"
+				"y":"i108"
 			},
 			"size":{
 				"height":30,
-				"width":369
+				"width":199
 			},
 			"anchor":{
 				"x":0,
-				"y":0.5
+				"y":1
 			},
 			"color":7157704,
 			"child_list":[
 				{
 					"type_name":"RichLabel",
 					"pos":{
-						"x":97,
+						"x":45,
 						"y":"50%"
 					},
+					"font_size":16,
 					"text":"开发分辨率"
 				},
 				{
@@ -184,65 +220,13 @@
 					},
 					"size":{
 						"height":"100%",
-						"width":"i200"
+						"width":"i111"
 					},
 					"anchor":{
 						"x":1,
 						"y":0.5
 					},
-					"child_list":[
-						{
-							"type_name":"CCLayerColor",
-							"pos":{
-								"x":"50%",
-								"y":"50%"
-							},
-							"zorder":-1,
-							"color":3285827
-						}
-					]
-				}
-			]
-		},
-		{
-			"type_name":"CCLayerColor",
-			"pos":{
-				"x":14,
-				"y":"i159"
-			},
-			"size":{
-				"height":30,
-				"width":369
-			},
-			"anchor":{
-				"x":0,
-				"y":0.5
-			},
-			"color":7157704,
-			"child_list":[
-				{
-					"type_name":"RichLabel",
-					"pos":{
-						"x":97,
-						"y":"50%"
-					},
-					"text":"脚本目录"
-				},
-				{
-					"type_name":"CCEditBoxExt",
-					"name":"editSrcPath",
-					"pos":{
-						"x":"i0",
-						"y":"50%"
-					},
-					"size":{
-						"height":"100%",
-						"width":"i200"
-					},
-					"anchor":{
-						"x":1,
-						"y":0.5
-					},
+					"fontSize":16,
 					"child_list":[
 						{
 							"type_name":"CCLayerColor",
