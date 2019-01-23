@@ -38,10 +38,7 @@ local function _init_native_config()
     g_conf_mgr.register_native_conf('uieditor_template_ctrls_dir', 'uieditor_template_ctrls')
 
     -- 帮助信息
-    g_conf_mgr.register_script_conf('editor_help_info', {
-        op_doc_url = 'http://note.youdao.com/noteshare?id=aff09f42a4f53177171e638c81853204&sub=DC80525D4CE246139538BE3C348C1D29',  -- 编辑器操作文档
-        evn_doc_url = 'http://note.youdao.com/noteshare?id=e89ed0967396ff847c4d745d1846f374&sub=ABE0DCE82F3F4AD580E94B5209A19816',  -- 安装环境文档
-    })
+    g_conf_mgr.register_script_conf('editor_help_url', 'http://note.youdao.com/noteshare?id=e89ed0967396ff847c4d745d1846f374&sub=ABE0DCE82F3F4AD580E94B5209A19816')
 end
 
 local function _initLogicEvents()

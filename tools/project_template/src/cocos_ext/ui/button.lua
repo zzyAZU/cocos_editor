@@ -306,7 +306,7 @@ if g_application:getTargetPlatform() == cc.PLATFORM_OS_WINDOWS then
                         return
                     end
                     if utils_get_tick() - last_time >=  0.5 and self._button_tips_item == nil then
-                        self:_showButtonTips()
+                        self:_showButtonTips(pos)
                         return
                     end
                     return 0.05
@@ -334,50 +334,38 @@ if g_application:getTargetPlatform() == cc.PLATFORM_OS_WINDOWS then
         self._bInitTipsMouseEvent = true
     end
 
-    function CCButton:_showButtonTips()
-        if self._button_tips_item == nil then
+    function CCButton:_showButtonTips(pos)
+        if not tolua_is_obj(self._button_tips_item) then
             local parent = g_director:getRunningScene()
             if parent == nil then
                 return
             end
             self._button_tips_item = g_uisystem.load_template_create('default/button_tips', parent)
-
-            self._button_tips_item.labelTips:SetString(self._tips)
-            local labelWidth, labelHeight = self._button_tips_item.labelTips:GetContentSize()
-
-            local maxLineWidth = 200
-            if labelWidth > maxLineWidth then
-                self._button_tips_item.labelTips:setMaxLineWidth(maxLineWidth)
-                labelWidth, labelHeight = self._button_tips_item.labelTips:GetContentSize()
-                self._button_tips_item.node:SetContentSize(labelWidth + 10, labelHeight + 10)
-            else
-                self._button_tips_item.node:SetContentSize(labelWidth + 10, labelHeight + 10)
-            end
-
-            local rootWidth = labelWidth + 10
-
-            local buttonWidth, buttonHeight = self:GetContentSize()
-            local buttonPos = self:convertToWorldSpace(ccp(buttonWidth/2, -10))
-            local winSize = g_director:getWinSize()
-
-            local buttonX, buttonY = buttonPos.x, buttonPos.y
-            if buttonPos.x - rootWidth/2 < 0 then
-                buttonX = rootWidth/2
-            end
-            
-            if buttonPos.x + rootWidth/2 > winSize.width then
-                buttonX = winSize.width - rootWidth/2
-            end
-
-            if buttonPos.y < labelHeight + 10 then
-                buttonY = buttonPos.y + buttonHeight + labelHeight + 30
-            end
-
-            self._button_tips_item.node:SetPosition(buttonX, buttonY)
-            self._button_tips_item.layerColor:SetContentSize('100%', '100%')
-            self._button_tips_item.layerColor:SetPosition('50%', '100%')
-            self._button_tips_item.labelTips:SetPosition('50%', '100%-5')
         end
+
+        self._button_tips_item.labelTips:SetString(self._tips)
+        local labelWidth, labelHeight = self._button_tips_item.labelTips:GetContentSize()
+
+        local maxLineWidth = 200
+        if labelWidth > maxLineWidth then
+            self._button_tips_item.labelTips:setMaxLineWidth(maxLineWidth)
+            labelWidth, labelHeight = self._button_tips_item.labelTips:GetContentSize()
+        end
+
+        local sz = self._button_tips_item.node:SetContentSizeAndReposChild(labelWidth + 10, labelHeight + 10)
+        local winSize = g_director:getWinSize()
+        local anchor = ccp(0, 0)
+
+        if pos.x + sz.width > winSize.width then
+            anchor.x = 1
+        end
+
+        if pos.y + sz.height > winSize.height then
+            anchor.y = 1
+        end
+
+        self._button_tips_item.node:setAnchorPoint(anchor)
+        self._button_tips_item.node:setPosition(pos)
     end
 else
     CCButton._updateTipsContent = empty_fun

@@ -24,14 +24,9 @@
 			"child_list":[
 				{
 					"type_name":"CCLayerColor",
-					"name":"layerColor",
-					"pos":{
-						"x":"50%",
-						"y":"100%"
-					},
 					"anchor":{
-						"x":0.5,
-						"y":1
+						"x":0,
+						"y":0
 					},
 					"color":15527414
 				},
@@ -39,14 +34,15 @@
 					"type_name":"RichLabel",
 					"name":"labelTips",
 					"pos":{
-						"x":"50%",
-						"y":"100%-5"
+						"x":5,
+						"y":"i5"
 					},
 					"anchor":{
-						"x":0.5,
+						"x":0,
 						"y":1
 					},
 					"font_size":16,
+					"text":" ",
 					"color":10063770
 				}
 			]

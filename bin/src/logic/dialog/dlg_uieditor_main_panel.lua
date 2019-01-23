@@ -141,7 +141,6 @@ function Panel:_initUIEditorBase()
 
     -- 打开模板文件
     _check_panel_exists_onclick(self.btnOpenFolder, function(curPanel) curPanel:OpenContainFolder() end)
-    -- _check_panel_exists_onclick(self.btnAddToTemplate, function(curPanel) curPanel:AddToTemplateList() end)
 
     -- 预览
     _check_panel_exists_onclick(self.btnPreview, function(panel) panel:OPPreviewPanel() end)
@@ -486,15 +485,6 @@ function Panel:_initUIEditorBase()
     end
     self.comboOther:AddMenuItem('游戏面板视图(Tab)', _switchFileDialog)
     self:add_key_event_callback({'KEY_TAB'}, _switchFileDialog)
-
-
-    self.comboHelp:AddMenuItem('编辑器使用操作文档', function()
-        g_application:openURL(g_script_conf['editor_help_info']['op_doc_url'])
-    end)
-
-    self.comboHelp:AddMenuItem('安装环境', function()
-        g_application:openURL(g_script_conf['editor_help_info']['evn_doc_url'])
-    end)
 
     -- 创建控件列表初始化
     for _, groupInfo in ipairs(constant_uieditor.controls) do

@@ -73,7 +73,7 @@ if g_application:getTargetPlatform() == cc.PLATFORM_OS_WINDOWS then
     end
 
     function cc.Node:SetContentSizeAndReposChild(sw, sh, filterCallback)
-        self:SetContentSize(sw, sh)
+        local ret = self:SetContentSize(sw, sh)
         local function _reorderSizeAndPosition(ctrl)
             if ctrl._x then
                 ctrl:SetPosition(ctrl._x, ctrl._y)
@@ -92,6 +92,7 @@ if g_application:getTargetPlatform() == cc.PLATFORM_OS_WINDOWS then
                 _reorderSizeAndPosition(child)
             end
         end
+        return ret
     end
 end
 

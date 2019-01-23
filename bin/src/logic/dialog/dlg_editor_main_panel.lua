@@ -50,6 +50,10 @@ function Panel:init_panel()
             self:ShowUIEditor()
         end
     end)
+
+    self.btnHelp.OnClick = function()
+        g_application:openURL(g_script_conf['editor_help_url'])
+    end
 end
 
 function Panel:ShowUIEditor()

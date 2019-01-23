@@ -135,7 +135,7 @@
 					"type_name":"CCButton",
 					"name":"btnRunGame",
 					"pos":{
-						"x":"i73",
+						"x":"i72",
 						"y":"50%"
 					},
 					"size":{
@@ -146,6 +146,22 @@
 					"frame1":"editor_res/run.png",
 					"enableText":false,
 					"tips":"运行debug版游戏"
+				},
+				{
+					"type_name":"CCButton",
+					"name":"btnHelp",
+					"pos":{
+						"x":"i99",
+						"y":"50%"
+					},
+					"size":{
+						"height":20,
+						"width":20
+					},
+					"9sprite":false,
+					"frame1":"editor_res/bangzhu.png",
+					"enableText":false,
+					"tips":"说明文档"
 				}
 			]
 		},

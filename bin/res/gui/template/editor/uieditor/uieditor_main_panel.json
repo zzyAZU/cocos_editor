@@ -130,23 +130,6 @@
 				},
 				{
 					"type_name":"CCCombobox",
-					"name":"comboHelp",
-					"pos":{
-						"x":325,
-						"y":"50%"
-					},
-					"size":{
-						"height":25,
-						"width":76
-					},
-					"anchor":{
-						"x":0,
-						"y":0.5
-					},
-					"text":"帮助"
-				},
-				{
-					"type_name":"CCCombobox",
 					"name":"comboRecentOpenFile",
 					"pos":{
 						"x":"i2",
