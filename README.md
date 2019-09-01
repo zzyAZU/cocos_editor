@@ -1,9 +1,3 @@
-github: https://github.com/CarlZhongZ/cocos_editor
-
-qq技术交流群:474161305
-
-详细文档: [点击查看](https://note.youdao.com/ynoteshare1/index.html?id=e89ed0967396ff847c4d745d1846f374&type=note#/)
-
 # 简单介绍
 基于 cocos2dx 最新版的自研编辑器。经历数年的使用与迭代.
 
